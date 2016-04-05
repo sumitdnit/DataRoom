@@ -1,0 +1,2 @@
+[12-Mar-2015 04:38:06 America/Denver] PHP Fatal error:  Class 'TestCase' not found in /home/blazecom/public_html/lab/ravabe_new/app/tests/ExampleTest.php on line 3
+[12-Mar-2015 04:38:10 America/Denver] PHP Fatal error:  Class 'Illuminate\Foundation\Testing\TestCase' not found in /home/blazecom/public_html/lab/ravabe_new/app/tests/TestCase.php on line 3

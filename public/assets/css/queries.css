@@ -1,0 +1,73 @@
+@media (max-width: 1400px) {
+
+.create-a-capture .right-panel-content {
+  width: 100px;
+}
+
+.create-a-capture .right-panel-content svg{
+  width: 70px;
+}
+
+.create-a-capture .right-panel-content h3{
+  font-size: 0.750rem;
+}
+
+.create-a-capture .right-panel-content h3 strong{
+  display: block
+}
+
+.create-a-capture .compose-label {
+  width: 80px;
+  height: 80px;
+  font-size: 2em;
+}
+
+}
+
+@media (max-width: 991px) {
+
+    .breadcrumb-header {
+        margin: 0 10px 0 10px;
+    }
+    .main {
+    padding: 0 65px 0 15px;
+    }
+    .create-a-capture {
+    padding: 0 85px 0 25px;
+    }
+
+    .create-a-capture input, .create-a-capture textarea{
+    max-width: 300px;
+    }
+
+    .create-a-capture .content{
+    width: 320px;
+    margin-right: 20px;
+    }
+
+    .create-a-capture .content-form{
+    max-width: 280px;
+    }
+
+    .create-a-capture select{
+    max-width: 75px;
+    }
+
+    .create-a-capture .profile h2, .create-a-capture .profile span{
+    font-size: 0.750rem;
+    }
+
+    .create-a-capture .profile img{
+    margin-right: 5px;
+    }
+    .create-a-capture .file .or-area{
+    margin: 0 10px;
+}
+    .create-a-capture .file .btn-area{
+    width: 145px;
+}
+.create-a-capture .file button {
+    width: 145px;
+}
+    
+}

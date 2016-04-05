@@ -1,0 +1,142 @@
+.scrollable {
+  position: relative;
+}
+
+.scrollable:focus {
+  outline: 0;
+}
+
+.scrollable .viewport {
+  position: relative;
+  overflow: hidden;
+}
+
+.scrollable .viewport .overview {
+  position: absolute;
+}
+
+.scrollable .scroll-bar {
+  display: none;
+}
+
+.scrollable .scroll-bar.vertical {
+  position: absolute;
+  right: 0;
+  height: 100%;
+}
+
+.scrollable .scroll-bar.horizontal {
+  position: relative;
+  width: 100%;
+}
+
+.scrollable .scroll-bar .thumb {
+  position: absolute;
+}
+
+.scrollable .scroll-bar.vertical .thumb {
+  width: 100%;
+  min-height: 10px;
+}
+
+.scrollable .scroll-bar.horizontal .thumb {
+  height: 100%;
+  min-width: 10px;
+  left: 0;
+}
+
+.not-selectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/*Ravabe Skin Thin */
+
+.scrollable.ravabe-skin {
+  padding-right: 10px;
+}
+
+.scrollable.ravabe-skin .scroll-bar {
+  background-color: #d1d5dd;
+}
+
+.scrollable.ravabe-skin .scroll-bar .thumb {
+  background-color: #1279b2;
+}
+
+.scrollable.ravabe-skin .scroll-bar:hover .thumb {
+  background-color: #1279b2;
+}
+
+.scrollable.ravabe-skin .scroll-bar.vertical {
+  width: 10px;
+}
+
+.scrollable.ravabe-skin .scroll-bar.horizontal {
+  height: 10px;
+  margin-top: 2px;
+}
+
+/*Ravabe Gray Skin */
+
+.scrollable.ravabe-gray-skin {
+  padding-right: 10px;
+}
+
+.scrollable.ravabe-gray-skin .scroll-bar {
+  background-color: #d1d5dd;
+  border-radius: 50px;
+ 
+}
+
+.scrollable.ravabe-gray-skin .scroll-bar .thumb {
+  background-color: #1279b2;
+  border-radius: 50px;
+}
+
+.scrollable.ravabe-gray-skin .scroll-bar:hover .thumb {
+  background-color: #1279b2;
+  
+}
+
+.scrollable.ravabe-gray-skin .scroll-bar.horizontal {
+  height: 10px;
+  margin-top: 2px;
+}
+
+/*Ravabe Skin Small */
+
+.scrollable.ravabe-skin-sm {
+  padding-right: 17px;
+}
+
+.scrollable.ravabe-skin-sm .scroll-bar {
+  background-color: #d1d5dd;
+}
+
+.scrollable.ravabe-skin-sm .scroll-bar .thumb {
+  background-color: #1279b2;
+}
+
+.scrollable.ravabe-skin-sm .scroll-bar:hover .thumb {
+  background-color: #1279b2;
+}
+
+.scrollable.ravabe-skin-sm .scroll-bar.vertical {
+  width: 5px;
+}
+
+.scrollable.ravabe-skin-sm .scroll-bar.horizontal {
+  height: 5px;
+  margin-top: 2px;
+}
+
+.scroll .viewport {
+  width: 100% !important;
+  height: 100% !important;
+}
+

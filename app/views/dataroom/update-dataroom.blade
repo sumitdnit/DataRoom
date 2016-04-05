@@ -1,0 +1,52 @@
+@extends('layouts.protected')
+@section('content')
+<div class="container">
+<h1 style="text-align:center;">Add DataRoom</h1>
+	       <div>                      
+									{{ Form::open(array('url' => 'dataroom/save')) }} 
+											<input type="hidden" name="addDataRoom" value="add" class="form-control">     									
+            <label for="Dataroom"><h4>DataRoom Name</h4></label></br>                         
+            <input type="text" id="dataRoom" name="dataRoom" value="" class="form-control" required>     
+												</br> 
+												<label for="Dataroom"><h4>Role</h4></label><br>
+												<select class="list-select-box" name="dataRoomRole" id="dataRoomRole" required>
+													<option value="">Select Role</option>
+													<option value="admin">Admin</option>
+													<option value="view">View</option>
+													<option value="downloded">Downloded</option>
+												</select>
+												</br> 
+												<label for="Dataroom"><h4>Status</h4></label><br>
+												<select class="list-select-box" name="dataRoomStatus" id="dataRoomStatus" required>
+													<option value="">Set Status</option>
+													<option value="1">Active</option>
+													<option value="0">Inactive</option>
+											
+												</select>
+												</br>        
+												</br>
+												<div>
+													<button type="submit"  value="add" class="btn btn-default btn-info">Add</button> 
+												</div>            
+									{{ Form::close() }}
+							</div>
+							<script>
+    $(document).ready(function () {
+							$("#dataRoomRole").heapbox({
+           'effect': {
+                'type': 'slide',
+                'speed': 'fast'
+            },
+            'heapsize': '200px'
+								});
+								$("#dataRoomStatus").heapbox({
+           'effect': {
+                'type': 'slide',
+                'speed': 'fast'
+            },
+            'heapsize': '200px'
+								});
+							
+   });
+</script>
+@endsection
