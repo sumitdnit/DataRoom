@@ -59,7 +59,6 @@ class Profile extends Eloquent {
 			'lastname' => $profile_detail->lastname,
 			'timezone' => $profile_detail->timezone,
 			'job_title' => $profile_detail->job_title,
-			'organization' => $profile_detail->organization,
 			'photo' => ($profile_detail->photo != '') ? $profile_detail->photo : '60.png',
 			'image' => ($profile_detail->photo != '') ? URL::asset('public/uploads/'.$profile_detail->photo) : URL::asset('assets/images/60.png')
 			); 

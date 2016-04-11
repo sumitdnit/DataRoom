@@ -7,15 +7,9 @@
         <div class="row">
           <div class="formsetLogin">
 		   <span>
-                        @if($cookie['email'] != '')
-                        @if($cookie['image'] == '')
-                        <img src="{{URL::asset('assets/images/60.png')}}" />
-                        @else
-                        <img src="{{$cookie['image']}}" />
-                        @endif
-                        @else
+                        
                         <h2><strong>Login</strong> DataRoom</h2>
-                        @endif
+                       
                     </span>
             
 			{{ Form::open(array('url' => 'login', 'id'=>'login-form')) }}   
@@ -25,7 +19,7 @@
               <div class="remberLogin clearfix">
                 <label class="checkbox pull-left">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="checkbox"  name="remember" value="remember-me">
+                <input type="checkbox"  name="remember" value="remember-me" <?php if($cookie['email'] != '' ) echo 'checked';?>>
                 Remember me</label>
                 <a href="{{url('/forgot-password')}}" class="pull-right need-help">Forgot password? </a><span class="clearfix"></span> </div>
               <button type="submit" class="btn btn-lg btn-primary btn-block btn-red btn-login"> Login</button>

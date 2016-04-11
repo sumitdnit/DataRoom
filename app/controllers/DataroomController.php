@@ -31,59 +31,125 @@ class DataroomController extends BaseController {
     }
 
 	public function deleteDataroom(){
-		$varId = Input::get('varDataRoomId');
-		if($varId > 0){
-					$delete = Dataroom::where('id', $varId)->delete();
-					Toastr::success('Dataroom deleted successfully !!');	
-					return Redirect::to('/dataroom/view');
-		}
-		else {
-					Toastr::error('There is some problem to delete it.!!');	
-					return Redirect::to('/dataroom/view');
-			}
+		$varId = trim(addslashes(Input::get('DataRoomId')));
+		$DataRoomUserId = trim(addslashes(Input::get('DataRoomUserId')));
+		
+
+		   if($this->user->usertype=="admin") {
+			   if($varId > 0){
+									 
+						//$projectfolder = ProjectFolder::where('project_id', $varProjectRoomId)->delete();
+						
+						$UserProjects = UserProject::where('dataroom_id', $varId)->delete();
+						$deleteproject = Project::where('data_room_id', $varId)->delete(); 
+						
+						$Dataroomdelete = UserDataroom::where('data_room_id', $varId)->delete();
+						$deletedata = Dataroom::where('id', $varId)->delete();
+						
+						Toastr::success('Dataroom deleted successfully !!');	
+						return Redirect::to('/dataroom/view');
+
+			   }
+			   else {
+						Toastr::error('There is some problem to delete it.!!');	
+						return Redirect::to('/dataroom/view');
+				}
+
+		    }
+		    else {
+						return Redirect::to('/error');
+			 }
 	}
 				
 	public function updateDataroom(){
-	       
-			$roomId = Input::get('varDataRoomId');
-			$varDataRoomUserId = Input::get('varDataRoomUserId');
-			if($this->user->usertype=="admin") {
-				$user_id = $varDataRoomUserId;
-			} else {
-				$user_id = $this->user->id;
-			}
-			
-			$DataRoominfo = Dataroom::where('id', $roomId)->first();
-			$DataRoomdomain = DomainDataroom::where('dataroom_id', $roomId)->first();
-			
+	       if($this->user->usertype=="admin") {
+			 $roomId = trim(addslashes(Input::get('varDataRoomId')));
+			  $varDataRoomUserId =trim(addslashes(Input::get('varDataRoomUserId')));
+			 
+			 $user_id = $this->user->id;
+			 $DataRoominfo 	= Dataroom::where('id', $roomId)->first();
+			  
 			$varDataRoomRole = Input::get('varDataRoomRole');
-			$varDataRoomStatus = $DataRoominfo['status'];
 			$varDataRoomName = $DataRoominfo['name'];
 			$varDataRoomcomp = $DataRoominfo['company'];
 			$varDataRoomdisc = $DataRoominfo['description'];
-			$varDataRoomdomain = $DataRoomdomain['domain'];
+			$varDataRoomdomain = $DataRoominfo['domain_restrict'];
+			$internel_user =$DataRoominfo['internal_user'];
+			$view_only =$DataRoominfo['view_only'];
+			
+			//$inviteDataRoom = UserDataroom::where('user_id', $varDataRoomUserId)->where('data_room_id',$roomId)->first();
+			
+			
+			$dataInfo = array();
+		$dataAddUser = array();
+			 $dataroomData= DB::table('data_room')->join('user_dataroom', 'data_room.id', '=', 'user_dataroom.data_room_id')
+				->join('users', 'user_dataroom.user_id', '=', 'users.id')
+				->select('data_room.id as roomid', 'user_dataroom.role as addedUserRole','user_dataroom.user_id as addedUser','user_dataroom.id as addedUserId','users.email as addedUserEmail','user_dataroom.data_room_id')
+				->where('data_room.id', $roomId)
+				->where('user_dataroom.user_id','<>', $this->user->id)
+				->get();
+				
+			if($dataroomData){
+			foreach($dataroomData as $key=>$data){
+				$dataAddUser[] = array(
+					'addemail' => $data->addedUserEmail,
+					'addrole' => $data->addedUserRole,
+					'addtableid' => $data->addedUserId,
+					'addemailid' => $data->addedUser,
+				);
+			}
+			
+		}
 			
 			$photo = $DataRoominfo['photo'];
-			$data = array('id'=>$roomId,'name'=>$varDataRoomName,'user_id'=>$user_id, 'role'=>$varDataRoomRole,'status'=>$varDataRoomStatus,'company'=>$varDataRoomcomp,'description'=>$varDataRoomdisc,'domain'=>$varDataRoomdomain,'photo'=>$photo);	
-			return View::make('dataroom.update-dataroom')->with('data', $data);
+			$data = array('id'=>$roomId,'name'=>$varDataRoomName,'user_id'=>$user_id, 'role'=>$varDataRoomRole,'company'=>$varDataRoomcomp,'description'=>$varDataRoomdisc,'domain_restrict'=>$varDataRoomdomain,'photo'=>$photo,'internel_user'=>$internel_user,'view_only'=>$view_only,'varDataRoomUserId'=>$varDataRoomUserId, 'addedUsersInfo'=>$dataAddUser);	
+			return View::make('dataroom.update-dataroom')->with('data', $data)->with('currentUser',$this->user->email);;
+			
+		}
+		else
+		{
+		
+		return Redirect::to('/error');
+		}	
 	}
 				
 				
 	public function saveupdateDataroom(){
 	
-	if(sizeof(Input::get('emails'))>0) {
-					$i = 0;
-					$userId = array();
-					foreach (Input::get('emails') as $key => $val) {
-						$useremail		= Input::get("emails.$key");
-						$users = DB::table('users')
-							->select('id')
-							->where('users.email' , $useremail)						    
-							->first();
-						$userId[$useremail] = $users->id;
-					}							
-	}
-		
+	$arrInviteExternalUserEmail = array();
+	$arrInviteInternalUserEmail = array();	
+	$arrInviteInternaladminUserEmail = array();	
+	$arrInviteInternaluserUserEmail = array();
+	
+	  if(sizeof(Input::get('userEmail'))>0) {
+		  $i = 0;			
+			foreach (Input::get('userEmail') as $key => $val) {
+				$UserType		= Input::get("source.$key");						
+				if($UserType=="admin") {								
+					$arrInviteInternaladminUserEmail[$key]['email'] = Input::get("userEmail.$key");
+					$arrInviteInternaladminUserEmail[$key]['id'] = Input::get("userId.$key");
+					$arrInviteInternaladminUserEmail[$key]['role'] = Input::get("userRole.$key");							
+					
+				}
+				elseif($UserType=="user") {								
+					$arrInviteInternaluserUserEmail[$key]['email'] = Input::get("userEmail.$key");
+					$arrInviteInternaluserUserEmail[$key]['id'] = Input::get("userId.$key");
+					$arrInviteInternaluserUserEmail[$key]['role'] = Input::get("userRole.$key");							
+					
+				}
+				elseif($UserType=="internal") {								
+					$arrInviteInternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
+					$arrInviteInternalUserEmail[$key]['id'] = Input::get("userId.$key");
+					$arrInviteInternalUserEmail[$key]['role'] = Input::get("userRole.$key");							
+					
+				} 
+				elseif($UserType=="external") {						
+					$arrInviteExternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
+					$arrInviteExternalUserEmail[$key]['role'] = Input::get("userRole.$key");
+				}
+				
+			}					
+		}
 		$varDataRoomAction = Input::get('Action');
 		$varDataRoomName = Input::get('dataRoom');
 		$varDataRoomId = Input::get('dataRoomId');
@@ -91,37 +157,28 @@ class DataroomController extends BaseController {
 		$varDataRoomdescription = Input::get('description');
 		$varUpdated = date('Y-m-d h:i:s');
 		$dataimg =Input::get('userprofile_picture');
+		$varDataRoomAdminId =Input::get('varDataRoomAdminId');
+		
+		
+		$domain_restrict = Input::get('domain_restrict');
+		$internal_user =Input::get('internel_user');
+		$view_only =Input::get('view_only');
 		
 		if($this->user->usertype!="admin") {
 			if($varDataRoomAction == 'update'){ 
 			
 				if($varDataRoomName != null || $varDataRoomName != ''){
-						 $update = Dataroom::where('id', $varDataRoomId)->update(array('name' => $varDataRoomName, 'company' => $varDataRoomcompany, 'description' => $varDataRoomdescription, 'updated_at' =>$varUpdated, 'photo'=>$dataimg));
+						 $update = Dataroom::where('id', $varDataRoomId)->update(array('name' => $varDataRoomName, 'company' => $varDataRoomcompany, 'description' => $varDataRoomdescription, 'updated_at' =>$varUpdated, 'photo'=>$dataimg ,'domain_restrict'=>$domain_restrict,'internal_user'=>$internal_user,'view_only'=>$view_only));
+							//var_dump(Input::get('userOldId'));exit;
 							
 							
-							$userDataroom = new UserDataroom;
-							$userDataroom->user_id = $this->user->id;
-							$userDataroom->data_room_id = $varDataRoomId;
-							$userDataroom->role = 'admin';
-							$userDataroom->updated_at = date('Y-m-d H:i:s');
-							$userDataroom->save();
-							
-							if(sizeof(Input::get('emails'))>0) {
-							foreach (Input::get('emails') as $key => $val) {
-								$useremail	= Input::get("emails.$key");							
-								$userDataroom = new UserDataroom;
-								$userDataroom->user_id = $userId[$useremail];
-								$userDataroom->data_room_id = $varDataRoomId;
-								$userDataroom->role = 'view';
-								$userDataroom->updated_at = date('Y-m-d H:i:s');
-								$userDataroom->save();
-							}
-							}
-							Toastr::success('DataRoom updated successfully !!');	
+
+							Toastr::success('DataRoom has been updated successfully !!');	
+
 							return Redirect::to('/dataroom/view');
 				}
 				else{
-					Toastr::error('Dataroom cat not be blank !!');
+					Toastr::error('Dataroom can not be blank !!');
 					return Redirect::to('/dataroom/view');
 				}
 			}
@@ -132,12 +189,72 @@ class DataroomController extends BaseController {
 		} else { 
 		if($varDataRoomAction == 'update'){ 
 				if($varDataRoomName != null || $varDataRoomName != ''){
-						 $update = Dataroom::where('id', $varDataRoomId)->update(array('name' => $varDataRoomName, 'company' => $varDataRoomcompany, 'description' => $varDataRoomdescription, 'updated_at' =>$varUpdated, 'photo'=>$dataimg));
-							Toastr::success('DataRoom updated successfully !!');	
+						
+						$update = Dataroom::where('id', $varDataRoomId)->update(array('name' => $varDataRoomName, 'company' => $varDataRoomcompany, 'description' => $varDataRoomdescription, 'updated_at' =>$varUpdated, 'photo'=>$dataimg,'domain_restrict'=>$domain_restrict,'internal_user'=>$internal_user,'view_only'=>$view_only));
+							if(sizeof(Input::get('userOldId'))>0) {
+		 						foreach (Input::get('userOldId') as $key => $val) {
+									//var_dump($val);
+									//print_r($val);
+									//die;
+                                   UserDataroom::where('id', $val)->delete();
+								}
+								//exit;
+							}							
+							if(sizeof($arrInviteInternaladminUserEmail)>0 || sizeof($arrInviteInternaluserUserEmail)>0){
+								if(sizeof($arrInviteInternaladminUserEmail)>0){
+									foreach($arrInviteInternaladminUserEmail AS $User){
+										$email = $User['email'];
+										$varInviteUserId = $User['id'];
+										$varInviteUserRole = $User['role'];
+										$dataRoomRelation = new UserDataroom;
+										$dataRoomRelation->user_id = $varInviteUserId;
+										if($varInviteUserId == $varDataRoomAdminId){
+                                        $varInviteUserRole = 'admin';
+                                         }
+										$dataRoomRelation->data_room_id = $varDataRoomId;
+										$dataRoomRelation->role = $varInviteUserRole;
+										$dataRoomRelation->save();
+									}
+								}
+								if(sizeof($arrInviteInternaluserUserEmail)>0){
+									foreach($arrInviteInternaluserUserEmail AS $User){
+										$email = $User['email'];
+										$varInviteUserId = $User['id'];
+										$varInviteUserRole = $User['role'];
+										$dataRoomRelation = new UserDataroom;
+										$dataRoomRelation->user_id = $varInviteUserId;
+										if($varInviteUserId == $varDataRoomAdminId){
+                                        $varInviteUserRole = 'admin';
+                                         }
+										$dataRoomRelation->data_room_id = $varDataRoomId;
+										$dataRoomRelation->role = $varInviteUserRole;
+										$dataRoomRelation->save();
+									}
+								}
+							
+							}
+							
+							if(sizeof($arrInviteInternalUserEmail)>0) {
+															
+								DataroomController::inviteInernalUserDataroom($varDataRoomId,$arrInviteInternalUserEmail);					
+							}
+							
+							$internel_user = Input::get('internel_user');
+							
+							if($internel_user==0) {
+								if(sizeof($arrInviteExternalUserEmail)>0) {
+									DataroomController::inviteExternalUserDataroom($varDataRoomId,$arrInviteExternalUserEmail);
+								}
+							}
+							
+							
+
+							Toastr::success('DataRoom has been updated successfully !!');	
+
 							return Redirect::to('/dataroom/view');
 				}
 				else{
-					Toastr::error('Dataroom cat not be blank !!');
+					Toastr::error('Dataroom can not be blank !!');
 					return Redirect::to('/dataroom/view');
 				}
 			}
@@ -148,7 +265,7 @@ class DataroomController extends BaseController {
 				
 	public function addDataroom(){
 		if($this->user->usertype=="admin") { 
-			return View::make('dataroom.add-dataroom');
+			return View::make('dataroom.add-dataroom')->with('currentUser',$this->user->email);
 		} else {
 		return Redirect::to('/error');
 		}
@@ -167,9 +284,9 @@ class DataroomController extends BaseController {
 					if(Input::get("userRole.$key")!="user")
 						$arrInviteInternalUserEmail[$key]['role'] = Input::get("userRole.$key");
 					else 
-						$arrInviteInternalUserEmail[$key]['role'] ='view';						
-					
-				} else { 							
+						$arrInviteInternalUserEmail[$key]['role'] ='view';
+				} 
+				else { 							
 					$arrInviteExternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
 					$arrInviteExternalUserEmail[$key]['role'] = Input::get("userRole.$key");
 				}
@@ -193,7 +310,7 @@ class DataroomController extends BaseController {
 						$varAddDataRoomStatus = '1';
 						$checkDataRoom = Dataroom::where('name', $varAddDataRoom)->first();	
 						if($checkDataRoom == null){
-						
+							//date_default_timezone_set("Asia/Kolkata");
 							$Dataroom = new Dataroom;
 							$Dataroom->name = $varAddDataRoom;
 							$Dataroom->company = $company;
@@ -224,38 +341,35 @@ class DataroomController extends BaseController {
 							$userDataroom->created_at = date('Y-m-d H:i:s');
 							$userDataroom->updated_at = date('Y-m-d H:i:s');
 							$userDataroom->save();
-							
-									
 							if(sizeof($arrInviteInternalUserEmail)>0) {
-															
-								DataroomController::inviteInernalUserDataroom($varLastInsertId,$arrInviteInternalUserEmail);					
+								DataroomController::inviteInernalUserDataroom($varLastInsertId,$arrInviteInternalUserEmail);			
 							}
 							
 							$internel_user = Input::get('internel_user');
-							
 							if($internel_user==0) {
 								if(sizeof($arrInviteExternalUserEmail)>0) {
 									DataroomController::inviteExternalUserDataroom($varLastInsertId,$arrInviteExternalUserEmail);
 								}
 							}
 							
-							Toastr::success('DataRoom Succesfully Added!!');
-							return Redirect::to('/dataroom/view');
+							//Toastr::success('DataRoom Succesfully Added!!');
+							//return Redirect::to('/dataroom/view');
+							echo json_encode(array('flag'=>'success','msg'=>'DataRoom Succesfully Added!!'));
+							exit;
 						}
 						else{
-							Toastr::error('That dataRoom is already in used !!');
-							return Redirect::to('/dataroom/view');
+							echo json_encode(array('flag'=>'error','msg'=>'That dataRoom is already in used !!'));
+							exit;
 						}
 				}
 				else{
-					Toastr::error('Dataroom cat not be blank !!');
-				return Redirect::to('/dataroom/view');
+						echo json_encode(array('flag'=>'error','msg'=>'Please enter data room name!!'));
+						exit;
 				}
-			
 		}
 		else{
-				Toastr::error('Dataroom wrong access !!');
-				return Redirect::to('/dataroom/view');
+			echo json_encode(array('flag'=>'error','msg'=>'Dataroom wrong access !!'));
+			exit;
 		}
 	}
 				
@@ -307,7 +421,7 @@ class DataroomController extends BaseController {
 								$email_data = array(
 									'email_message' => Lang::get('invite', $data),
 									'email_action_url' => $url,
-									'email_action_text' => Lang::get('emails.invite_email_action_text')
+									'email_action_text' => "You are invite for new data room."
 									);
 								
 								Mail::send('emails.invite', $email_data, function($messag)use($data) { 
@@ -446,7 +560,7 @@ class DataroomController extends BaseController {
 		$varUserId = Input::get('varUserId');
 		if($varId && $varUserId){
 					UserDataroom::where('data_room_id', $varId)->where('user_id', $varUserId)->delete();
-					Toastr::success('User Removed successfully !!');	
+					Toastr::success('User has been removed successfully !!');	
 					return Redirect::to('/dataroom/view');
 		}
 		else {
@@ -580,6 +694,31 @@ class DataroomController extends BaseController {
 	public function getUsernames(){ 
 	
 	$profiles = DB::table('users')
+		  //->join('profiles', 'profiles.user_id', '=', 'users.id' )
+		  ->where('email', 'Like', '%'.Input::get('term').'%')->where('users.id','<>' , $this->user->id )
+		  ->get();
+		
+		 
+		 $json =array(); 
+		 if($profiles && count($profiles)>0) {
+			 $json['incomplete_results']= false; 
+			 $json['total_count']= count($profiles);
+			 $i=0;
+			 foreach($profiles as $prof){
+				$json['items'][$i]['email']= $prof->email;
+				$json['items'][$i]['id']= $prof->id;
+				$json['items'][$i]['firstname']= User::getUserFirstName($prof->id);
+				$json['items'][$i++]['photo']= ( $prof->photo)? URL::to('/') . '/public/uploads/'.  $prof->photo : URL::to('/') . '/assets/images/small-profile-icon.png';
+			 }
+		 }
+		 echo json_encode($json); die;
+					
+	}
+	
+	public function UpdateUsernames()
+	{ 
+	
+	$profiles = DB::table('users')
 		  ->join('profiles', 'profiles.user_id', '=', 'users.id' )
 		  ->where('email', 'Like', '%'.Input::get('term').'%')->where('users.id','<>' , $this->user->id )
 		  ->get();
@@ -598,16 +737,6 @@ class DataroomController extends BaseController {
 			 }
 		 }
 		 echo json_encode($json); die;
-					
-	}
-	
-	public function UpdateUsernames()
-	{
-	
-		return $user_details= User::where('email', 'LIKE', '%' . Input::get('term') . '%')
-					->where('id', '!=', $this->user->id)
-					->lists('email');
-					
 					
 	}
 		
@@ -637,30 +766,34 @@ class DataroomController extends BaseController {
 			$email = $User['email'];
 			$varInviteUserId = $User['id'];
 			$varInviteUserRole = $User['role'];
-			// Add Relation
-			$dataRoomRelation = new UserDataroom;
-			$dataRoomRelation->user_id = $varInviteUserId;
-			$dataRoomRelation->data_room_id = $varDataRoomId;
-			$dataRoomRelation->role = $varInviteUserRole;
-			$dataRoomRelation->save();
-			$url = URL::to('/dataroom/view');
+			//$checkDataRoom = Userexternal::where('email', $email)->first();	
+			//if($checkDataRoom == null){
+ 
 
-			$data = array(
+				// Add Relation
+				$dataRoomRelation = new UserDataroom;
+				$dataRoomRelation->user_id = $varInviteUserId;
+				$dataRoomRelation->data_room_id = $varDataRoomId;
+				$dataRoomRelation->role = $varInviteUserRole;
+				$dataRoomRelation->save();
+				$url = URL::to('/dataroom/view');
+
+				$data = array(
 				'url' => $url,
 				'user_email' => $email, 
-			);
-			
-			$email_data = array(
+				);
+				$email_data = array(
 				'email_message' => Lang::get('invite', $data),
-				'email_action_url' => $data['url'],
-				'email_action_text' => 'You are invite for new data room.'
-			);
-			
-			Mail::send('emails.invite', $email_data, function($messag)use($data) { 
-				$messag->to($data['user_email'], 'Name')->subject('invite you to join the dataroom !');
-			});
+				'email_action_url' => $url ,
+				'email_action_text' => "You are invited for new data room.",
+				);
 
+				Mail::send('emails.invite', $email_data, function($messag)use($data) { 
+				$messag->to($data['user_email'], 'Name')->subject('Invite you to join the dataroom !');
+				});			
+			//}
 		}		 
+			 
 		
 	}
 				

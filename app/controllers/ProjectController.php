@@ -14,18 +14,39 @@ class ProjectController extends BaseController {
 		   $this->email = $tmp->email;
         }
     }
-	
+	 
 	//Editor:@Pradeep
 	//UpdatedAt:09/03/2016	
 	public function getProjects() {
 			$varGetDataRoomId = base64_decode(Input::get('d'));
 		$varGetDataRoomEncId = Input::get('d');
 		
+		if($this->user->usertype=="admin")
+		$arrDataRoom = Dataroom::getDataRoomForSupoerADmin();
+		else 
+		$arrDataRoom = Dataroom::getDataRoomByUserId($this->user->id);
+		
+		
+		if(!$varGetDataRoomId) { 
+		
+			if(sizeof($arrDataRoom)>0) { 
+               	 foreach($arrDataRoom as $dkey => $dr) { 
+				 	if(trim($dr->name)) {						
+						if(!$varGetDataRoomId) { 							
+								$varGetDataRoomId = $dr->roomid;
+								$varGetDataRoomEncId = base64_decode($dr->roomid);		
+								break;
+						}
+					}
+				 }
+			}
+		} 
+				
 		if($varGetDataRoomId > 0 && $varGetDataRoomId!=''){
-			return View::make('project/view-project')->with(array('UserRole' => $this->user->usertype, 'did'=>$varGetDataRoomId,'encyid' => $varGetDataRoomEncId));
+			return View::make('project/view-project')->with(array('arrDataRoom' => $arrDataRoom,'UserRole' => $this->user->usertype, 'did'=>$varGetDataRoomId,'encyid' => $varGetDataRoomEncId));
 		}
 		else{
-			return View::make('project/view-project')->with(array('UserRole' => $this->user->usertype,'did'=>'','encyid' =>''));
+			return View::make('project/view-project')->with(array('arrDataRoom' => $arrDataRoom,'UserRole' => $this->user->usertype,'did'=>'','encyid' =>''));
 		}
 	}
 	
@@ -35,12 +56,12 @@ class ProjectController extends BaseController {
 			$varGetDataRoomEncId = Input::get('d');
 			
 			if(($varGetDataRoomId > 0 &&  $varGetDataRoomId!='') && $this->user->usertype=="admin"){
-				return View::make('project.add-project')->with(array('UserRole' => $this->user->usertype, 'did'=>$varGetDataRoomId));
+				return View::make('project.add-project')->with(array('UserRole' => $this->user->usertype, 'did'=>$varGetDataRoomId))->with('currentUser',$this->user->email);
 			}
 			else if($varGetDataRoomId=='' && 	$this->user->usertype=="admin"){
 				$arrDataRooms = Dataroom::getAllDataRoom($this->user->id, 'admin');
-				return View::make('project.add-project')->with(array('UserRole' => $this->user->usertype, 'did'=>$varGetDataRoomId,'arrDr'=>$arrDataRooms));
-				
+				return View::make('project.add-project')->with(array('UserRole' => $this->user->usertype, 'did'=>$varGetDataRoomId,'arrDr'=>$arrDataRooms))->with('currentUser',$this->user->email);
+
 			}
 			else{
 					Toastr::error('Unauthorished access to create project(s)!');
@@ -49,47 +70,57 @@ class ProjectController extends BaseController {
         
     }
 		
-		public function saveProjects() {
-		$arrInviteExternalUserEmail = array();	
-		$arrInviteInternalUserEmail = array();
-	  if(sizeof(Input::get('userEmail'))>0) {
-			$i = 0;
+
+		public function saveProjects() {  
 			$arrInviteExternalUserEmail = array();	
 			$arrInviteInternalUserEmail = array();
-			foreach (Input::get('userEmail') as $key => $val) {
-				$UserType		= Input::get("source.$key");						
-				if($UserType=="internal") {								
-					$arrInviteInternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
-					$arrInviteInternalUserEmail[$key]['id'] = Input::get("userId.$key");
-					$arrInviteInternalUserEmail[$key]['role'] = Input::get("userRole.$key");							
+			if(sizeof(Input::get('userEmail'))>0) {
+				$i = 0;
+			
+				foreach (Input::get('userEmail') as $key => $val) {
+					$UserType		= Input::get("source.$key");						
+					if($UserType=="internal") {								
+						$arrInviteInternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
+						$arrInviteInternalUserEmail[$key]['id'] = Input::get("userId.$key");
+						$arrInviteInternalUserEmail[$key]['role'] = Input::get("userRole.$key");							
+
 					
-				} else { 							
-					$arrInviteExternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
-					$arrInviteExternalUserEmail[$key]['role'] = Input::get("userRole.$key");
-				}
+					} else { 							
+						$arrInviteExternalUserEmail[$key]['email'] = Input::get("userEmail.$key");
+						$arrInviteExternalUserEmail[$key]['role'] = Input::get("userRole.$key");
+					}	
+				}					
+			}	
 				
-			}					
-		}	
+			$varDataRoomRedirectId = Input::get('dataRoomRedirectId');
+			if($varDataRoomRedirectId > 0)
+				$varDataRoomRedirectId = base64_encode($varDataRoomRedirectId);
+			else
+				$varDataRoomRedirectId = '';
 				
-		$varDataRoomId = addslashes(Input::get('dataRoomId'));
-		if($varDataRoomId > 0 && $varDataRoomId!=''){
-			$varSubmitForm = addslashes(Input::get('addProjectRoom'));
-			if($varSubmitForm == 'add'){	
-				$varAddProjectRoom = addslashes(Input::get('projectRoom'));
-				if($varAddProjectRoom != null || $varAddProjectRoom != ''){
-					$company = Input::get('company');
-					$domain_restrict = Input::get('domain_restrict');
-					$internel_user = Input::get('internel_user');
-					$view_only = Input::get('view_only');
+			
+			
+			$varDataRoomId = trim(Input::get('dataRoomId'));
+			if($varDataRoomId > 0 && $varDataRoomId!=''){
+				$varSubmitForm = addslashes(Input::get('addProjectRoom'));
+				if($varSubmitForm == 'add'){	
+					$varAddProjectRoom = addslashes(Input::get('projectRoom'));
+					if($varAddProjectRoom != null || $varAddProjectRoom != ''){
+						$company = Input::get('company');
+						$domain_restrict = Input::get('domain_restrict');
+						$internel_user = Input::get('internel_user');
+						$view_only = Input::get('view_only');
+						
+						$description = Input::get('description');
+						$dataimg =Input::get('userprofile_picture');
 					
-					$description = Input::get('description');
-					$dataimg =Input::get('userprofile_picture');
 					
-					
-							$varAddDataRoomStatus = '1';
-							$checkProjectRoom = Project::where('name', $varAddProjectRoom)->where('data_room_id',$varDataRoomId)->first();
-							if($checkProjectRoom == null){
+						$varAddDataRoomStatus = '1';
+						$checkProjectRoom = Project::where('name', $varAddProjectRoom)->where('data_room_id',$varDataRoomId)->first();	
+						if($checkProjectRoom == null){
+							DB::beginTransaction();
 							
+							try{
 								$ObjProject = new Project;
 								$ObjProject->data_room_id = $varDataRoomId;
 								$ObjProject->name = $varAddProjectRoom;
@@ -103,57 +134,102 @@ class ProjectController extends BaseController {
 								$ObjProject->status = $varAddDataRoomStatus;
 								$ObjProject->created_at = date('Y-m-d H:i:s');
 								$ObjProject->updated_at = date('Y-m-d H:i:s');
-								$ObjProject->save();
-								$varLastInsertId = $ObjProject->id;
+								if($ObjProject->save()){
+										$varLastInsertId = $ObjProject->id;
+										$objUserProjectroom = new UserProject;
+										$objUserProjectroom->user_id = $this->user->id;
+										$objUserProjectroom->project_id = $varLastInsertId;
+										$objUserProjectroom->dataroom_id = $varDataRoomId;
+										$objUserProjectroom->role = 'admin';
+										$objUserProjectroom->created_at = date('Y-m-d H:i:s');
+										$objUserProjectroom->updated_at = date('Y-m-d H:i:s');
+										if($objUserProjectroom->save()){
+																				
+											if(sizeof($arrInviteInternalUserEmail)>0) {	
+												ProjectController::inviteInernalUserProjectroom($varLastInsertId,$varDataRoomId,$arrInviteInternalUserEmail);							
+											}
+											
+											$internel_user = Input::get('internel_user');
+											if($internel_user==0) {
+												if(sizeof($arrInviteExternalUserEmail)>0) {
+													//ProjectController::inviteExternalUserProjectroom($varLastInsertId,$varDataRoomId,$arrInviteExternalUserEmail);
+												}
+											}
+											
+											//creating folders
+											$varfolderPath =  public_path().'/public/folders/';
+											$projectfoldercheck=ProjectFolder::where('folder_name',$varAddProjectRoom)->where('parent_id',0)->first();
+											if($projectfoldercheck && count($projectfoldercheck)>0){
+												$update = ProjectFolder::where('id', $projectfoldercheck->id)->update(array('project_id'=>$varLastInsertId));
+												if (!File::isDirectory($varfolderPath.$projectfoldercheck->id)){
+													$old = umask(0);
+													mkdir($varfolderPath .$projectfoldercheck->id, 0775);
+													umask($old);
+												}	
+												
+											}else{
+												
+												$objProjectFolder = new ProjectFolder;
+												$objProjectFolder->folder_name = $varAddProjectRoom;
+												$objProjectFolder->alias = $varAddProjectRoom;
+												$objProjectFolder->parent_id = '0';
+												$objProjectFolder->created_at = date('Y-m-d H:i:s');
+												$objProjectFolder->updated_at = date('Y-m-d H:i:s');
+												$objProjectFolder->created_by = $this->user->id;
+												$objProjectFolder->project_id = $varLastInsertId;
+												if($objProjectFolder->save()){
+													$old = umask(0);
+													mkdir($varfolderPath .$objProjectFolder->id, 0775);
+													umask($old);
+												}else{
+													
+													 DB::rollback();
+													 echo  json_encode(array('flag'=>1,'error'=>'Something gone wrong . Please try again!!')); exit;
+													  
+												}	
+												
+											}	
+											DB::commit();
+											echo json_encode(array('flag'=>'success','msg'=>'Project room Succesfully Added!!','did'=>base64_encode($varDataRoomId)));
+											exit;
+										}else{
+											DB::rollback();
+											echo json_encode(array('flag'=>'error','msg'=>'Something gone wrong. Please try again !!','did'=>base64_encode($varDataRoomId)));										
+										}
+								}else{
+										DB::rollback();
+										echo json_encode(array('flag'=>'error','msg'=>'Something gone wrong. Please try again !!','did'=>base64_encode($varDataRoomId)));
+								}
 							
-								
-								$objUserProjectroom = new UserProject;
-								$objUserProjectroom->user_id = $this->user->id;
-								$objUserProjectroom->project_id = $varLastInsertId;
-								$objUserProjectroom->dataroom_id = $varDataRoomId;
-								$objUserProjectroom->role = 'admin';
-								$objUserProjectroom->created_at = date('Y-m-d H:i:s');
-								$objUserProjectroom->updated_at = date('Y-m-d H:i:s');
-								$objUserProjectroom->save();
-																	
-								if(sizeof($arrInviteInternalUserEmail)>0) {	
-									ProjectController::inviteInernalUserProjectroom($varLastInsertId,$varDataRoomId,$arrInviteInternalUserEmail);							
-								}
-								
-								$internel_user = Input::get('internel_user');
-								if($internel_user==0) {
-									if(sizeof($arrInviteExternalUserEmail)>0) {
-										//ProjectController::inviteExternalUserProjectroom($varLastInsertId,$varDataRoomId,$arrInviteExternalUserEmail);
-									}
-								}
-								
-								Toastr::success('Project room Succesfully Added!!');
-								return Redirect::to('/project/view?d='.base64_encode($varDataRoomId));
+							}catch(Exception $e){
+										DB::rollback();
+										echo json_encode(array('flag'=>'error','msg'=>'Something gone wrong. Please try again !!','did'=>base64_encode($varDataRoomId)));
 							}
-							else{
-								Toastr::error('That Project Room is already in used !!');
-								return Redirect::to('/project/view?d='.base64_encode($varDataRoomId));
-							}
+						
+						}
+						else{ 
+							echo json_encode(array('flag'=>'error','msg'=>'That Project Room is already in used !!','did'=>base64_encode($varDataRoomId)));
+							exit;
+						}
 					}
 					else{
-						Toastr::error('Projectroom cat not be blank !!');
-					return Redirect::to('/project/view?d='.base64_encode($varDataRoomId));
+						echo json_encode(array('flag'=>'error','msg'=>'Please enter project room name!!','did'=>base64_encode($varDataRoomId)));
+						exit;
 					}
-				
+				}
+				else{
+					echo json_encode(array('flag'=>'error','msg'=>'Projectroom wrong access !!','did'=>base64_encode($varDataRoomId)));
+					exit;
+				}
 			}
-			else{
-					Toastr::error('Projectroom wrong access !!');
-					return Redirect::to('/project/view?d='.base64_encode($varDataRoomId));
+			else {
+				echo json_encode(array('flag'=>'error','msg'=>'Projectroom wrong access !!','did'=>base64_encode($varDataRoomId)));
+				exit;
 			}
-		}
-		else {
-					Toastr::error('Projectroom wrong access !!');
-					return Redirect::to('/project/view?d='.base64_encode($varDataRoomId));
-		}
     }
 	
 	public function inviteInernalUserProjectroom($varProjectRoomId,$varDataRoomId,$users){
-		foreach($users AS $User){
+		foreach($users AS $User){ 
 			$email = $User['email'];
 			$varInviteUserId = $User['id'];
 			$varInviteUserRole = $User['role'];
@@ -174,16 +250,16 @@ class ProjectController extends BaseController {
 				$email_data = array(
 				'email_message' => Lang::get('invite', $data),
 				'email_action_url' => $url,
-				'email_action_text' => "Join now.",
+				'email_action_text' => "You are invited for new project room.",
 				);
 
 				Mail::send('emails.inviteproject', $email_data, function($messag)use($data) { 
-				$messag->to($data['user_email'], 'Name')->subject('invited you to join the Project !');
+				$messag->to($data['user_email'], 'Name')->subject('Invite you to join the Project !');
 				});	
 			//}
-		}		 
-		
+		} 
 	}
+	
 	public function inviteExternalUserProjectroom($varProjectRoomId,$varDataRoomId,$varInviteUserEmail){
 			if(count($varInviteUserEmail) > 0){
 				if($varProjectRoomId > 0 && $varProjectRoomId!=''){
@@ -247,7 +323,7 @@ class ProjectController extends BaseController {
 		$projectId = $encodeproj;
 		$user_id = $this->user->id;
 		
-		$project_data = Project::getProjectInfoByProjectId($projectId);
+		$project_data =  Project::getProjectInfoByProjectId($projectId,$user_id);
 		return Response::json(array('data'=>$project_data));      
     }
 	
@@ -265,6 +341,10 @@ class ProjectController extends BaseController {
 				}
 			}
 		}
+		
+		
+		DB::beginTransaction();
+		try{
 				if($params["addtableid"]){
 					foreach($params["addtableid"] as $k=> $oneObj){
 						$del = UserProject::where('id', $oneObj)->where('project_id', base64_decode($params["proid"]))->delete();
@@ -280,17 +360,26 @@ class ProjectController extends BaseController {
 					if($varProjectAction == 'update'){
 						if($varProjecName != null || $varProjecName != ''){
 								 $update = Project::where('id', $varProjecId)->update(array('name' => $params["name"],'company' => $params["company"],'description' => $params["description"],'domain_restrict' => $params["domain_restrict"],'internal_user' => $params["internel_user"],'view_only' => $params["view_only"], 'updated_at' =>$varUpdated));
-									echo json_encode(array('error'=>3,'msg'=>"Project room has successfully updated")); exit();
+								 $update = ProjectFolder::where('project_id', $varProjecId)->where('parent_id', 0)->update(array('folder_name' => $params["name"],'alias'=> $params["name"] , 'updated_at' =>date('Y-m-d H:i:s')));
+								 DB::commit();
+								 echo json_encode(array('error'=>3,'msg'=>"Project room has been successfully updated")); exit();
 						}
 						else{
+							DB::rollback();
 							echo json_encode(array('error'=>1,'msg'=>"Please enter Project room or Project room description")); exit();
 						}
 					}
 					else{
+						DB::rollback();
 						echo json_encode(array('error'=>1,'msg'=>"Project room not found to edit")); exit();
 					}
+			}catch(Exception $e)	{
 				
-				}
+				
+				DB::rollback();
+				echo json_encode(array('error'=>1,'msg'=>"Something gone wrong. Please try again")); exit();
+			}
+	}
 	
 	
 	
@@ -299,9 +388,23 @@ class ProjectController extends BaseController {
 		$varProjectRoomId = base64_decode($params['p']);
 		$varDataRoomId = base64_decode($params['dataRoomen']);
 		if($varProjectRoomId && $varDataRoomId){
+				DB::beginTransaction();
+				try{
+					$folder=ProjectFolder::where('project_id', $varProjectRoomId)->get();
+					if($folder && count($folder)>0){
+						foreach($folder as $fld){
+							Files::where('folder_id', $fld->id)->delete();
+						}
+					}
+					$projectfolder = ProjectFolder::where('project_id', $varProjectRoomId)->delete();
 					$UserProjects = UserProject::where('dataroom_id', $varDataRoomId)->where('project_id', $varProjectRoomId)->delete(); 
-					$delete = Project::where('id', $varProjectRoomId)->delete();
-					echo json_encode(array('error'=>3,'msg'=>"Project room has successfully deleted")); exit();
+					$delete = Project::where('id', $varProjectRoomId)->delete();					
+					DB::commit();
+					echo json_encode(array('error'=>3,'msg'=>"Project room has been deleted successfully")); exit();
+				}catch(Exception $e)	{
+					DB::rollback();
+					echo json_encode(array('error'=>1,'msg'=>"Something gone wrong. Please try again")); exit();
+			}	
 		}
 		else {
 					echo json_encode(array('error'=>1,'msg'=>"Project room not found to edit")); exit();
@@ -582,7 +685,7 @@ class ProjectController extends BaseController {
 		$varUserId = Input::get('varUserId');
 		if($varUserId && $varProjectRoomId && $varDataRoomId){
 					UserProject::where('project_id', $varProjectRoomId)->where('user_id', $varUserId)->where('dataroom_id', $varDataRoomId)->delete();
-					Toastr::success('User Removed successfully !!');	
+					Toastr::success('User has been removed successfully !!');	
 					return Redirect::to('/project/view');
 		}
 		else {
@@ -621,7 +724,14 @@ class ProjectController extends BaseController {
 	
 	public function getEditProjectView(){
 		$proj=Input::get('p');
-		return View::make('project/edit-project')->with(array('UserRole' => $this->user->usertype,'proId'=>$proj));
+		$datas = Project::select('data_room_id')->where('id', base64_decode($proj))->first();
+		$did = $datas->data_room_id;
+		
+		return View::make('project/edit-project')
+		->with(array('UserRole' => $this->user->usertype,'proId'=>$proj))
+		->with('currentUser',$this->user->email)
+		->with('did',$did);
+
 	}
 	
 }

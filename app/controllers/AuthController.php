@@ -16,8 +16,9 @@ class AuthController extends BaseController {
             if ($cookie_email) {
                 try{
                     $user = Sentry::findUserByLogin($cookie_email);
-                    $image = ($user->profile->photo) ? URL::asset('public/uploads/' . $user->profile->photo) : '';
-                    $cookie = array('email' => $cookie_email, 'image' => $image);
+                    //$image = ($user->profile->photo) ? URL::asset('public/uploads/' . $user->profile->photo) : '';
+                    //$cookie = array('email' => $cookie_email, 'image' => $image);
+										$cookie = array('email' => $cookie_email);
                 }catch (Cartalyst\Sentry\Users\UserNotFoundException $e) {
                   Cookie::make('remember_email', '', -5);
                 }
@@ -41,12 +42,12 @@ class AuthController extends BaseController {
 		
 									
             if (Input::has('remember')) {
-                $cookie = Cookie::forever('remember_email', Input::get('email'));
-				 $cookie = Cookie::forever('user_type',$user->usertype);
+                $cookie1 = Cookie::forever('remember_email', Input::get('email'));
+								$cookie = Cookie::forever('user_type',$user->usertype);
 				
             } else {
-                $cookie = Cookie::forever('remember_email', '');
-				$cookie = Cookie::forever('user_type', '');
+                $cookie1 = Cookie::forever('remember_email', '');
+								$cookie = Cookie::forever('user_type', '');
             }
             $response = array(
                 'status' => 'success',
@@ -101,7 +102,7 @@ class AuthController extends BaseController {
             }
             Toastr::success($response['flash'], $title = null, $options = []);
 						
-            return Redirect::to('dataroom/view/')->withCookie($cookie);
+            return Redirect::to('dataroom/view/')->withCookie($cookie1)->withCookie($cookie);
             
         } else {
             Toastr::error($response['flash']);
@@ -165,8 +166,8 @@ class AuthController extends BaseController {
 						if(Input::get('email')){
 							Session::forget('success_login');
 							Sentry::logout();
-							$varOrganization = Input::get('organization');
-							$varPhoneNumber = Input::get('phonenumber');
+							//$varOrganization = Input::get('organization');
+							//$varPhoneNumber = Input::get('phonenumber');
 							$varStdCode = Input::get('stdcode');
 							$varUserId = Input::get('user_id');
 							$varToken = Input::get('token');
@@ -178,9 +179,9 @@ class AuthController extends BaseController {
                 $profile->user_id      = $varUserId;
                 $profile->firstname    = Input::get('firstname');
                 $profile->lastname     = Input::get('lastname');
-								$profile->organization = $varOrganization;
+								//$profile->organization = $varOrganization;
 								$profile->phone_code   = $varStdCode;
-								$profile->phone_number = $varPhoneNumber;
+								//$profile->phone_number = $varPhoneNumber;
                 $profile->timezone = Input::get('user_tz');
                 $profile->save();
 
@@ -272,7 +273,7 @@ class AuthController extends BaseController {
                 
             }
         } catch (\Cartalyst\Sentry\Users\UserNotFoundException $e) {
-            Toastr::error('Code not valid');
+            Toastr::error('Reset password link has been expired or already reset.');
             return Redirect::to('/');
         } 
     }

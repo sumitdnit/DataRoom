@@ -16,6 +16,12 @@
         </div>
       </div>
       <?php } ?>
+	  {{Form::open(array('url'=> 'dataroom/update','name'=>'dataroomupdate','id'=>'dataroomupdate'))}}
+			<input type="hidden" value="" name="_token">
+			<input type="hidden" value="" name="varDataRoomId" id="varDataRoomId"> 
+			<input type="hidden" value="" name="varDataRoomUserId" id="varDataRoomUserId"> 
+			<input type="hidden" value="" name="varDataRoomRole" id="varDataRoomRole">
+			{{Form::close()}}
     </div>
     <div> @if (Session::has('message'))
       <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -72,6 +78,13 @@
                     </div>
                   </div>
                 </div>
+				 {{Form::open(array('url'=> 'dataroom/delete','name'=>'dataroomdelete','id'=>'dataroomdelete'))}}
+			<input type="hidden" value="" name="_token">
+			<input type="hidden" value="" name="DataRoomId" id="DataRoomId"> 
+			<input type="hidden" value="" name="DataRoomUserId" id="DataRoomUserId"> 
+			<input type="hidden" value="" name="DataRoomRole" id="DataRoomRole">
+			{{Form::close()}}
+    </div>
                 <div class="utility-popup cutility clearfix">
                   <div class="closeutilityPopup"><a href="#"><i class="fa fa-times"></i></a></div>
                   <div class="utility-popup-title">Copy File </div>
@@ -125,7 +138,7 @@
     </div>
   </div>
 </div>
-<img class="loader" src="<?php echo URL::to('/')?>/assets/images/home.gif"  > 
+<!--<img class="loader" src="<?php //echo URL::to('/')?>/assets/images/home.gif"  > -->
 <script>
 
 $(document).ready(function(){
@@ -153,6 +166,26 @@ $(document).on("click", ".settingUtility", function(ee) {
 			var varDataRoomRole = $(this).parents('.utility-box').find('.info').find('.datarole').html();
 			$("#varDataRoomRole").val(varDataRoomRole);
 			$("#dataroomupdate").submit();
+			/* end code for edit informations*/
+		});
+		
+		$('.delutility').on("click",function(e){
+			e.stopPropagation();
+			$(this).parents('.utility-box').find('.cutility').show();
+			$(this).parents('.utility-box').find('.mutility').hide();
+			$(this).parents('.utility-box').find('.sutility').hide();	
+			
+			/*code for edit informations*/
+			var DataRoomId = $(this).parents('.utility-box').find('.info').find('.id').html();			
+			$("#DataRoomId").val(DataRoomId);
+			//alert(varDataRoomId);
+			var DataRoomUserId = $(this).parents('.utility-box').find('.info').find('.uid').html();
+			$("#DataRoomUserId").val(DataRoomUserId);
+			//alert(varDataRoomUserId);
+			var DataRoomRole = $(this).parents('.utility-box').find('.info').find('.datarole').html();
+			$("#DataRoomRole").val(DataRoomRole);
+			//alert(varDataRoomRole);
+			$("#dataroomdelete").submit();
 			/* end code for edit informations*/
 		});
 		

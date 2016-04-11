@@ -27,6 +27,7 @@ Route::group(array('before' => 'csrf'), function()
     'uses' => 'AuthController@postLogin'
     ]);
     
+    
     Route::post('/create-user', [
     'as' => 'create-user',
     'uses' => 'AuthController@postCreateUser'
@@ -273,7 +274,6 @@ Route::post('profile-photo', [
     'as' => 'profile-photo',
     'uses' => 'DataroomController@postPhoto'
 ]);
-
 /*Project routes end*/
 
 
@@ -338,5 +338,30 @@ Route::get('/change-password', [
 Route::post('/change-password', [
     'as' => 'change-password',
     'uses' => 'UserController@postChangePassword'
+]);
+
+Route::get('/showfiles', [
+    'as' => 'showfiles',
+    'uses' => 'FolderController@showfiles'
+]);
+
+Route::post('/renamefiles', [
+    'as' => 'renamefiles',
+    'uses' => 'FolderController@renamefiles'
+]);
+
+Route::get('/download', [
+    'as' => 'download',
+    'uses' => 'FolderController@download'
+]);
+
+Route::post('/deletefiles', [
+    'as' => 'deletefiles',
+    'uses' => 'FolderController@deletefiles'
+]);
+
+Route::post('/upload-file', [
+    'as' => 'upload-file',
+    'uses' => 'FolderController@uploadFile'
 ]);
 /* End folder controller */

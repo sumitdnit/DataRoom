@@ -53,5 +53,12 @@ class User extends SentryUser {
 					$Usr = DB::table('profiles')->select('firstname', 'lastname')->where('user_id', $id)->first();
 					return ucfirst($Usr->firstname)." ".ucfirst($Usr->lastname);
 				}
+		
+		// Function used to display user first name if avaialbe or not for email invitation
+		// Developed by kapil		
+		public static function getUserFirstName($id){
+			$Usr = DB::table('profiles')->select('firstname')->where('user_id', $id)->first();
+			return $varName = (count($Usr) > 0)?ucfirst($Usr->firstname):'';
+		}
    
 }

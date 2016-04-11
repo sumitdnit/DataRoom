@@ -484,6 +484,7 @@ Generic Workflow
 .create-a-capture input {
     position: relative;
     width: 100%;
+
     max-width: 400px;
     height: 45px;
     padding-left: 15px;
@@ -523,7 +524,7 @@ Generic Workflow
     margin-bottom: 10px;
 }
 
-.create-a-capture .profiles images {
+.create-a-capture .profiles img {
     float: left;
     border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -1140,12 +1141,14 @@ Generic Workflow
     width: 90%;
     margin-left: 20px;
     margin-top: 25px;
-    height: 80px;
-    padding-top: 17px;
+    height: 195px;    
     color: #c7c5c6;
     text-align: center;
     border: dashed 1px #c7c5c6;
+	position:relative;
 }
+
+
 
 .files-edit .drag-n-drop h4 {
     font-size: 1em;
@@ -1296,7 +1299,7 @@ Generic Workflow
     display: block;
 }
 
-.file-data images {
+.file-data img {
     width: 100%;
 }
 
@@ -1374,7 +1377,7 @@ Generic Workflow
     margin: 20px 45px 0 0;
 }
 
-.file-data.option-list images {
+.file-data.option-list img {
     width: 40px;
     height: 40px;
     float: left;
@@ -1392,6 +1395,11 @@ Generic Workflow
     width: 146px;
     height: 50px;
     margin: 0 auto;
+	position:absolute;
+	left:50%;
+	margin-left:-73px;
+	margin-top:-25px;
+	top:50%;
 }
 #create-folders .drag-box svg:not(:root) {
     overflow: hidden;
@@ -1955,7 +1963,7 @@ End of Toggleble Menu JS Assets
     padding-top: 10px;
 }
 
-.workflow-draggable-menu .content .menu-header .info ul li images {
+.workflow-draggable-menu .content .menu-header .info ul li img {
     display: block;
     margin-bottom: 6px
 }
@@ -1965,7 +1973,7 @@ End of Toggleble Menu JS Assets
     width: 38px;
 }
 
-.workflow-draggable-menu .content .menu-header .info ul li i images {
+.workflow-draggable-menu .content .menu-header .info ul li i img {
     margin: 0 auto;
 }
 
@@ -2038,7 +2046,7 @@ End of Toggleble Menu JS Assets
     margin-right: 20px;
 }
 
-.workflow-draggable-menu .content .post .author images {
+.workflow-draggable-menu .content .post .author img {
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -2097,7 +2105,7 @@ End of Toggleble Menu JS Assets
     border-bottom: solid 1px #ccc;
 }
 
-.workflow-draggable-menu .content .history ul li images {
+.workflow-draggable-menu .content .history ul li img {
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -2169,7 +2177,7 @@ End of Toggleble Menu JS Assets
     margin-left: 10px;
 }
 
-.task-completed images,
+.task-completed img,
 .task-completed span {
     display: none;
 }
@@ -2186,7 +2194,7 @@ End of Toggleble Menu JS Assets
     width: 60px;
 }
 
-.dashboard-draggable-menu .activity .activity-user images {
+.dashboard-draggable-menu .activity .activity-user img {
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -5275,7 +5283,7 @@ select:active {
 .container_boxgroup:hover {-webkit-box-shadow: 0px 0px 20px -6px rgba(0,0,0,0.44);
 -moz-box-shadow: 0px 0px 20px -6px rgba(0,0,0,0.44);
 box-shadow: 0px 0px 20px -6px rgba(0,0,0,0.44);}
-.title-ravabegroup a { background:#003366; text-align:center; font-size:17px; color:#fff; padding:14px 30px; font-weight:bold; display:block; line-height:22px; border-radius:5px; transition:all 0.5s ease-in-out 0s; height:75px;}
+.title-ravabegroup a { background:#003366; text-align:center; font-size:17px; color:#fff; padding:14px 30px; font-weight:bold; display:block; line-height:22px; border-radius:5px; transition:all 0.5s ease-in-out 0s; height:75px; white-space:nowrap;text-overflow:ellipsis; overflow:hidden;}
 .title-ravabegroup a:hover { background:#064a8e;}
 .org-groupicons { text-align:center;}
 .group-middle { padding:0; margin:15px 0; text-align:center;}
@@ -5450,7 +5458,7 @@ ul.profileDropdown li a:hover {background:#f5f5f5;}
 .mangeuserSelect { background:none; border:none;}
 
 /* filter */
-.dropFilter { float:right; margin:20px 0 0 0;}
+.dropFilter { float:right; margin:0px 0 0 0;}
 .dropFilter .addDropdown { float:left; margin:0;}
 .filterBtn {float:right; margin-left:15px; border-radius:0; background:#00a6bb; border:none;}
 .filterBtn:hover { background:#0194a7;}
@@ -5458,11 +5466,51 @@ ul.profileDropdown li a:hover {background:#f5f5f5;}
 #add-project { float:left;}
 
 
-/* Media query css start */
+.box-drop-img {}
+.box-drop-img .drag-n-drop { margin:5px auto;}
+.card-sm img { max-width:100%;}
+
+
+
+.lstview {}
+.grdview {}
+.grdview .file-data.option-list a{ padding:0px !important;}
+.grdview .file-data { width:19.6% !important; margin-bottom:25px !important;}
+.grdview .status { display:none !important;}
+.grdview .update_timeday { display:none !important;}
+.grdview .userdatafile img { width:100% !important; height:100% !important; padding:7px !important; margin:0 !important;}
+.folderdropdown select{width: 145px}
+.angucomplete-row {margin-bottom:10px;}
+
+.qq-upload-button{    position: relative;
+    overflow: hidden;
+    direction: ltr;
+    width: 100%!important;
+    height: 190px!important;
+    background: url('../images/dragclick.png')!important;
+    color: transparent!important;
+}
+     
+
+
+
+/* Media query css start 
 @media (max-width:1040px) {
 ul.profileDropdown { top:25px;}
 .dataroom-dropdown  {top:33px;}
+}*/
+
+@media screen and (min-width:776px) and (max-width:1040px){
+.folderdropdown p { display:block;}
+.addDropdown section {float:none; margin-bottom:15px;} 
+.folderdropdown select { width:100%;}
+.addDropdown { margin:15px 0 0 0;}
+#create-folder-file .file-upload { margin:0px !important;}
 }
+
+
+
+
 
 @media screen and (min-width:768px) and (max-width:1023px){
 .section-ip { margin:0 0 25px;}
@@ -5482,12 +5530,24 @@ ul.profileDropdown { top:25px;}
 .wflow_link .titlefw {font-size:16px !important; margin-top:28px;}
 #add-project {float:none;}
 .dropFilter { display:block; float:none; margin:60px 0 0 0;}
-.addDropdown select { width:228px;}
+.addDropdown select { width:205px;}
 .filterBtn { float:left;}
+}
+
+@media screen and (min-width:320px) and (max-width:775px){
+.folderdropdown p { display:block;}
+.addDropdown section {float:none; margin-bottom:15px;} 
+.folderdropdown select { width:100%;}
+.addDropdown { margin:15px 0 0 0;}
+#create-folder-file .file-upload { margin:0px !important;}
 }
 
 /* filter */
 @media screen and (min-width:320px) and (max-width:480px){	
-	.addDropdown select { width:188px; float:left;}
+	/* .addDropdown select { width:188px; float:left;} */
 	.filterBtn { float:left;}
+	.remberLogin label.checkbox{ width:100%;}
+	.remberLogin .pull-right.need-help {display: block;margin-top: 0; width: 100%;}	
+	.greybtnLink { padding:10px 40px; margin:16px 20px 0 -10px;}
 }
+

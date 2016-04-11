@@ -11,7 +11,6 @@ class Dataroom extends Eloquent {
 
 			return DB::table('data_room')
 				->select('data_room.id as roomid', 'data_room.name')
-				
 				 ->orderBy('name', 'asc')
 				->get();
 		

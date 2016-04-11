@@ -57,7 +57,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'room_dev',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 'ravabe@123456',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

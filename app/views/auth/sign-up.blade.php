@@ -59,9 +59,9 @@
 							
               <input type="hidden" name='user_tz' id="time-zone" value="Asia/Kolkata">
               <input type="password" placeholder="Password" class="" name="password" id="password" title="Password must contain at least 8 characters, including UPPER/lowercase and numbers" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,30}" onchange="this.setCustomValidity(this.validity.patternMismatch ? this.title : '');" data-toggle="password" required>
-							 <input type="text" placeholder="Enter Organization" class="" name="organization" id="Organization"  required>
+							<!-- <input type="text" placeholder="Enter Organization" class="" name="organization" id="Organization"  required> -->
 							 
-							 <div class="row">
+							 <!--<div class="row">
 								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 std-code">
 								<input type="text" placeholder="STD Code" class="" name="stdcode" id="stdcode" required>
 								</div>
@@ -69,7 +69,7 @@
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
 								<input type="text" placeholder="Enter Phone number" class="" name="phonenumber" id="phonenumber" required>
 								</div>
-							 </div>
+							 </div>-->
 							 
               <div class="remberLogin clearfix">
                 <label class="checkbox pull-left agree-text">

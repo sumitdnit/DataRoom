@@ -19,15 +19,45 @@
    	$dname = ucfirst($Dataroom->name);
    }
     ?>
-   <div class="breadcrumb-header">
-           <ul>
-               <li><a href="{{url('dataroom/view')}}">Data Room</a></li>
+   <div class="breadcrumb-header clearfix">
+           <ul style="float:left">
+               <li><a href="{{url('dataroom/view')}}">Dataroom</a></li>
                <?php if($dname ){ ?>
                <li><a href="{{url('project/view')}}?d=<?php echo $varGetDataRoomId?>">{{$dname}}</a></li>
                <?php } else { ?>
-               <li><a href="{{url('project/view')}}">Project Room</a></li>
+               <li><a href="{{url('project/view')}}">Project</a></li>
                <?php } ?>
            </ul>
+		   
+		   
+		   <div class="dropFilter clearfix">
+			<div class="addDropdown">	
+           
+			<select id="userProject" class="form-control ng-pristine ng-untouched ng-valid">
+			<?php $fristdataRoomid = ''; 
+			if(sizeof($arrDataRoom)>0) { ?>
+               	<?php foreach($arrDataRoom as $dkey => $dr) { 
+				 	if(trim($dr->name)) {
+				?>
+               <option value="<?php echo $dr->roomid?>" <?php if($did==$dr->roomid){ ?> selected="selected" <?php } ?>><?php echo ucfirst($dr->name); ?></option>
+              	 <?php } }?>
+               <?php } else {  ?> 
+			<option>Select Dataroom</option>
+                <?php } ?>
+			
+			</select>	
+               <?php
+			if(sizeof($arrDataRoom)>0) { ?>
+               	<?php foreach($arrDataRoom as $dkey => $dr) { 
+				 	if(trim($dr->name)) {
+				?>
+                    <a href="{{url('project/view')}}?d=<?php echo base64_encode($dr->roomid)?>" id="<?php echo $dr->roomid?>" style="display:none;">text </a>
+                    
+                 <?php } } } ?>   
+			</div>
+			<button class="btn btn-red btn-login btn-primary filterBtn">Filter</button>               
+                 </div>
+		   
        </div>
    </div>
   </div>
@@ -37,22 +67,12 @@
           <div class="create-wflow clearfix">
           <div class="wflow_link">         	
 					{{Form::open(array('url'=> 'project/add-project','name'=>'add-project','method'=>'GET','id'=>'add-project'))}}
-						<input type="hidden" value="{{$encyid}}" name="d" id="varPostDataRoomId"> 
+						<input type="hidden" value="<?php if(base64_decode($encyid) > 0) echo $encyid;?>" name="d" id="varPostDataRoomId">
              				<span><img alt="" src="{{URL::asset('assets/images/create_newworkflow.png')}}"></span> 
-						<input type="submit" value="Create a Project Room" class="titlefw"/>
+						<input type="submit" value="Create a Project" class="titlefw"/>
 					{{Form::close()}}
                  
-                         <div class="dropFilter clearfix">
-			<div class="addDropdown">		
-			<select ng-change="showFolders()" ng-model="org.project_id" id="userProject" class="form-control ng-pristine ng-untouched ng-valid">
-			<option value="0">-Select Project-</option>
-			<option>Project A</option>
-			<option>Project B</option>
-			<option>Project C</option>
-			</select>	
-			</div>
-			<button class="btn btn-red btn-login btn-primary filterBtn">Filter</button>               
-                 </div>   
+                            
                    
 			</div>
           </div>
@@ -95,7 +115,7 @@
           <div class="row" >
             <div class="col-md-15 col-sm-3" ng-repeat="(index,dataroom) in alerts">
               <div class="container_boxgroup" >
-                <div class="title-ravabegroup"><a href="{{ url('users/folder?p=') }}<% dataroom.encyptid %>"><% dataroom.name %></a></div>
+                <div class="title-ravabegroup"><a href="{{ url('users/folder') }}"><% dataroom.name %></a></div>
                
                 <div class="group-middle">
                   <div class="org-groupicons"><img src="{{URL::asset('assets/images/usergroup-organization.png')}}" alt=""></div>
@@ -113,7 +133,7 @@
                <?php if($UserRole=="admin") { ?> <div class="settingUtility"><i class="fa fa-cog"></i></div>	<?php }?>					
 						<div class="utility-box">
 							<ul>
-								<li class="editutility"> <i class="fa fa-pencil-square-o"></i><a href="{{ url('project/edit?p=') }}<% dataroom.encyptid %>">Edit</a></li>
+								<li class="editutility"> <a href="{{ url('project/edit?p=') }}<% dataroom.encyptid %>"><i class="fa fa-pencil-square-o"></i>Edit</a></li>
 								<li class="copyutility"> <i class="fa fa-clone"></i> Copy</li>
 								<li class="moveutility"><i class="fa fa-arrows-alt"></i> Move</li>
 								<li class="shareutility"><i class="fa fa-share-alt"></i> Share</li>
@@ -195,7 +215,7 @@
   </div>
 </div>
 
-<img class="loader" src="<?php echo URL::to('/')?>/assets/images/home.gif"  >
+<!--<img class="loader" src="<?php //echo URL::to('/')?>/assets/images/home.gif"  >-->
 <script>
 
 $(document).ready(function(){
@@ -291,14 +311,21 @@ $(document).on("click", ".settingUtility", function(ee) {
 });
 </script>
 
-<script>
 
-			
+<script>	
 var URL='<?php echo URL::to('/')?>';
 var did ='<?php echo base64_encode($did); ?>';
 
 </script>
 <script type="text/javascript" src="{{ URL::asset('assets/js/projectroom.js') }}"></script>
-
+<script> 
+$(document).ready(function(){
+	$( ".filterBtn" ).click(function() {
+		 var pro = $( "#userProject" ).val();
+		  var Dpro = $( "#"+pro).attr('href');
+		 window.location = Dpro;
+	});
+});
+</script>
 
 @endsection 

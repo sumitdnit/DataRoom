@@ -69,42 +69,44 @@ class UserController extends BaseController {
         return View::make('setting/change-password');
     }
     
-	 public function postChangePassword() {
-	   
-	  
-		$oldpassword = Input::get('oldpassword');
-		$password = Input::get('password');
-        $resetpassword = Input::get('re-password');
+	public function postChangePassword() {
+			$oldpassword   = Input::get('oldpassword');
+			$password 		 = Input::get('password');
+			$resetpassword = Input::get('re-password');
 		
-		$passes = array(
-		'oldpassword'  => $oldpassword,
-		'password' => $password,
-		'resetpassword' => $resetpassword
-		);
+			$passes = array(
+										'oldpassword'  => $oldpassword,
+										'password' => $password,
+										'resetpassword' => $resetpassword
+									);
 		
-		$rules = array(
-		'oldpassword' => 'required|numbers|letters|symbols|between:8,16',
-		'newpassword' => 'required|numbers|letters|symbols|between:8,16|confirmed|different:oldpassword'
-		);
+			$rules = array(
+									'oldpassword' => 'required|numbers|letters|symbols|between:8,16',
+									'newpassword' => 'required|numbers|letters|symbols|between:8,16|confirmed|different:oldpassword'
+									);
     
-		
-	     if($resetpassword===$password){
-		// $user = DB::table('users')->where('name', Auth::user()->name)->first();
-	    if (Input::has('password')) {
-		
-            $this->user->password = Input::get('password');
-            $this->user->save();  
-			 Toastr::success('Password Change successful');
-                        return Redirect::to('change-password');   
-        }
-		}
-		else{
-                    Toastr::error('Password not matched');
-                    return Redirect::to('change-password'); 
-         } 
-		 return Redirect::to('change-password');
-        
+		  $user = Sentry::findUserById($this->user->id);
+			
+		  if($user->checkPassword($oldpassword)){
+				if($resetpassword==$password){
+				  if ($password!='') {
+					  $this->user->password = $password;
+					  $this->user->save();  
+					  Toastr::success('Password has been change successfully!');
+					  return Redirect::to('change-password');   
+				  }
+				}
+			  else{
+				  Toastr::error('Password and confirm password does not match!!');
+				  return Redirect::to('change-password'); 
+			  }
+		  }
+		  else {
+			  Toastr::error('Old password does not match!!');
+			  return Redirect::to('change-password'); 
+		  } 
     }
+		
     public function getUserList() {
         $userName = array();
         $term = Input::get('term', '');

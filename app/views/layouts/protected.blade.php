@@ -23,6 +23,7 @@
 		{{HTML::style('assets/css/tagmanager.css')}}
 		
 		{{HTML::style('assets/css/dropzone.css')}}
+		{{HTML::style('assets/css/sweetalert.css')}}
 
         {{HTML::script('assets/js/jquery-2.1.1.min.js')}}
 
@@ -51,6 +52,7 @@
 		{{HTML::script('assets/js/jquery.custom-scrollbar.js')}}
 		{{HTML::script('assets/js/lightslider.js')}}
 		{{HTML::script('assets/js/tagmanager.js')}}
+		{{HTML::script('assets/js/sweetalert-dev.js')}}
 </head>
 <body  >
 <!-- Header -->
@@ -100,7 +102,7 @@
     <div class="header-nav-menu"> <a href="#"><i class="fa fa-bars"></i></a>
       <div class="mobilenavigation">
         <ul>
-          <li><a href="{{url('dataroom/view')}}">Dataroom</a>
+          <li><a href="javascript:void(0)">Dataroom</a>
             <ul>
               <li><a href="{{url('dataroom/view')}}">Dataroom</a></li>
               <li><a href="{{url('project/view')}}">Project room</a></li>

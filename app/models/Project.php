@@ -14,27 +14,21 @@ class Project extends Eloquent {
 		
 	public static function getAllProjects($dataroomId,$user,$roles){
 		if($roles=='admin'){
+			return $sql= DB::table('projects')	
+			->select('projects.id as projid', 'projects.name')
+			->where('data_room_id', $dataroomId)	
+			->where('projects.status', 1)->get();	
 
-			 return $sql= DB::table('projects')
-				->join('user_project', 'projects.id', '=', 'user_project.project_id')
-				->select('projects.id as projid', 'projects.name')
-							->where('user_project.dataroom_id', $dataroomId)							
-							->where('projects.status', 1)->groupBy(array('projid','projects.name'))	
-							 ->get();					 
-			
 		}else{	
-		
 			return DB::table('projects')
-				->join('user_project', 'projects.id', '=', 'user_project.project_id')
-				->select('projects.id as projid', 'projects.name')
-							->where('user_project.dataroom_id', $dataroomId)
-							->where('user_project.user_id',$user)
-							->where('projects.status', 1)	
-							 ->get();
-							 
-		}				 
-												
-  }	
+			->join('user_project', 'projects.id', '=', 'user_project.project_id')
+			->select('projects.id as projid', 'projects.name')
+			->where('user_project.dataroom_id', $dataroomId)
+			->where('user_project.user_id',$user)
+			->where('projects.status', 1)	
+			->get();
+			}	
+ } 
 	
 	
 	   public static function getProjectForAdmin($user_id){
@@ -105,24 +99,26 @@ public static function getProjectForSupoerADmin($dataroomid){
 	
 	}
 	
-	public static function getProjectInfoByProjectId($pro_id){
+	public static function getProjectInfoByProjectId($pro_id,$user_id=''){
 		$proInfo = array();
 		$proAddUser = array();
 		$proData= DB::table('projects')->join('user_project', 'projects.id', '=', 'user_project.project_id')
 				->join('users', 'user_project.user_id', '=', 'users.id')
 				->select('projects.id as projid', 'projects.name', 'projects.company', 'projects.photo', 'projects.description', 'projects.domain_restrict', 'projects.internal_user', 'projects.view_only', 'projects.status as projstatus','user_project.role as addedUserRole','user_project.user_id as addedUser','user_project.id as addedUserId','users.email as addedUserEmail','user_project.dataroom_id')
-				->where('user_project.role','<>' ,'admin')
+				//->where('user_project.user_id','<>' ,$user_id)
 				->where('projects.id', $pro_id)
 				->get();
 				
 		if($proData){
 			foreach($proData as $key=>$pro){
-				$proAddUser[] = array(
-					'addemail' => $pro->addedUserEmail,
-					'addrole' => $pro->addedUserRole,
-					'addtableid' => $pro->addedUserId,
-					'addemailid' => $pro->addedUser,
-				);
+				if($pro->addedUser != $user_id){ 
+					$proAddUser[] = array(
+						'addemail' => $pro->addedUserEmail,
+						'addrole' => $pro->addedUserRole,
+						'addtableid' => $pro->addedUserId,
+						'addemailid' => $pro->addedUser,
+					);
+				}
 			}
 			$proInfo = array(
 				'projid'=>$proData[0]->projid,

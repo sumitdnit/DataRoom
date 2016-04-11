@@ -221,8 +221,7 @@
 			$scope.org.image=e;
 		},	
 	    $scope.inviteuser = function(e) {
-			 
-			 
+		$scope.domain_restrict = $("#domain_restrict").val();	 
 			 
 			 
 			 if($.trim($('#email_value').val())==''){
@@ -311,10 +310,11 @@
 				
 				$('#invusr').append(datas);
 				$('.userplaceholder').append(addInvitedUser(email,id,photo,utype));
+				$('#email_value').val("");
 				  
 			}
 			else{
-				$('#email').next().html('Domain is restricted.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+				$('#email').next().html('Domain is restricted.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">X</a>');
 				$('#email').next().show();
 				$('#email_value').focus(); return false;
 			}
@@ -445,15 +445,20 @@ function fieldChange(value,id){
 			$(this).parent().css("display", "none");
 		});	
    
-function restrictDomain(email, domain_restrict){
-	if(domain_restrict){
-		if (email.indexOf(domain_restrict) >= 0){
-			return addUserFlag = true;
-		}
-		else{
-			return addUserFlag = false;
-		}
-	}else{
-		return addUserFlag = true;
-	}
-}
+function restrictDomain(email, domain_restrict) {
+     var domainsplit;
+	 var emailsplit = email.split("@");
+	 if(domain_restrict){
+		domainsplit = domain_restrict.split("@"); 
+	 }
+     
+	 if (domain_restrict) {
+         if (emailsplit[1]===(domainsplit[1])) {
+			 return addUserFlag = true;
+         } else {
+             return addUserFlag = false;
+         }
+     } else {
+         return addUserFlag = true;
+     }
+ }

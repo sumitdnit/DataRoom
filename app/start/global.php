@@ -122,4 +122,4 @@ App::after(function($request, $response)
 require app_path() . '/filters.php';
 require app_path() . '/helpers.php';
 require app_path() . '/composers.php';
-//error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
