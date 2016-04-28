@@ -2,7 +2,11 @@
 @section('content')
 <style>
 .setbtn .btn-default.btn-xs {float: left;margin: 0 5px;}
-
+.autofocusbox {
+	border-color :#298fca;
+	box-shadow:0 0 2px #298fca;
+	background:#fff;
+}
 </style>
 
 <div class="wrapper"  ng-app="ravabe" ng-controller="ProjectList" >
@@ -115,7 +119,7 @@
           <div class="row" >
             <div class="col-md-15 col-sm-3" ng-repeat="(index,dataroom) in alerts">
               <div class="container_boxgroup" >
-                <div class="title-ravabegroup"><a href="{{ url('users/folder') }}"><% dataroom.name %></a></div>
+                <div class="title-ravabegroup"><a href="{{ url('users/folder?p=<% dataroom.encyptid %>') }}"><% dataroom.name %></a></div>
                
                 <div class="group-middle">
                   <div class="org-groupicons"><img src="{{URL::asset('assets/images/usergroup-organization.png')}}" alt=""></div>
@@ -139,70 +143,67 @@
 								<li class="shareutility"><i class="fa fa-share-alt"></i> Share</li>
                                 <li class="delutility" ng-click="delProroom(dataroom.encyptid)" id="delProject" proj-id="<% dataroom.encyptid %>"><i class="fa fa-times-circle"></i>Delete</li>
 							</ul>
-							<div class="info" style="display:none;">
-								<div class="id"><% dataroom.id %></div>
-								<div class="uid"><% dataroom.user_id %></div>
-								<div class="datarole"><% dataroom.role %></div>
-								
-												
+						<div class="info" style="display:none;">
+							<div class="id"><% dataroom.id %></div>
+							<div class="uid"><% dataroom.user_id %></div>
+							<div class="datarole"><% dataroom.role %></div>
+						</div>
+						<div class="utility-popup cutility clearfix">
+							<div class="closeutilityPopup"><a href="#"><i class="fa fa-times"></i></a></div>
+							<div class="utility-popup-title">Copy File </div>
+							<hr>
+							<div class="fldr-title">Title:</div>
+							<div class="fldrsubmitTxt">
+								<div class="submitnameFolder">Contract-china-january.pdf</div>
 							</div>
+							<div class="folder-option">Folder:</div>
+							<div class="folder-name">China </div>
+							<button type="submit" class="btn btn-lg btn-primary btn-red pull-right utilitybtn">Copy</button>
 						</div>
                               
-                 <div class="utility-popup cutility clearfix">
-						<div class="closeutilityPopup"><a href="#"><i class="fa fa-times"></i></a></div>
-						<div class="utility-popup-title">Copy File </div>
-						<hr>
-						<div class="fldr-title">Title:</div>
-						<div class="fldrsubmitTxt">
-							<div class="submitnameFolder">Contract-china-january.pdf</div>
-						</div>
-						<div class="folder-option">Folder:</div>
-						<div class="folder-name">China </div>
-						<button type="submit" class="btn btn-lg btn-primary btn-red pull-right utilitybtn">Copy</button>
-						</div>
-                              
-                              <div class="utility-popup mutility clearfix">
-						<div class="closeutilityPopup"><a href="#"><i class="fa fa-times"></i></a></div>
-						<div class="utility-popup-title">Move File </div>
-						<hr>					
-						<div class="folder-option">Folder:</div>
-						<div class="folder-name">China </div>						
-						<div class="selFolder">
-							<select>
-								<option>Folder</option>
-								<option>Folder</option>
-								<option>Folder</option>
-							</select>
-						</div>
-						<div class="fldrsubmitTxt">
-							<div class="submitnameFolder">Contract-china-january.pdf</div>
-						</div>						
-						<button type="submit" class="btn btn-lg btn-primary btn-red pull-right utilitybtn">Move</button>
+            <div class="utility-popup mutility clearfix">
+							<div class="closeutilityPopup"><a href="#"><i class="fa fa-times"></i></a></div>
+							<div class="utility-popup-title">Move File </div>
+							<hr>					
+							<div class="folder-option">Folder:</div>
+							<div class="folder-name">China </div>						
+							<div class="selFolder">
+								<select>
+									<option>Folder</option>
+									<option>Folder</option>
+									<option>Folder</option>
+								</select>
+							</div>
+							<div class="fldrsubmitTxt">
+								<div class="submitnameFolder">Contract-china-january.pdf</div>
+							</div>						
+							<button type="submit" class="btn btn-lg btn-primary btn-red pull-right utilitybtn">Move</button>
 						</div>
                               
-                              <div class="utility-popup sutility clearfix">
-						<div class="closeutilityPopup"><a href="#"><i class="fa fa-times"></i></a></div>
-						<div class="utility-popup-title">Share </div>
-						<hr>
-						<div class="fldr-title">Copy Link:</div>
-						<div class="fldrsubmitTxt">
-							<div class="submitnameFolder">http://drive.com/loremipsum/</div>
-						</div>						
-						<button type="submit" class="btn btn-lg btn-primary btn-red pull-right utilitybtn">Share</button>
+            <div class="utility-popup sutility clearfix">
+							<div class="closeutilityPopup"><a href="javascript:void(0);"><i class="fa fa-times"></i></a></div>
+							<div class="utility-popup-title"><b>Share</b> </div>
+							<div class="fldr-title">Copy Link:</div>
+							<div class="fldrsubmitTxt">
+								<div class="submitnameFolder sharelink autofocusbox" >&nbsp;</div>
+							</div>						
 						</div>
                               
-                              <div class="viewdataroom_uploadfiles">	
+            <div class="viewdataroom_uploadfiles">	
 					<!--<div class="fileFieldAddimg">
-					<a href="javascript:;" class=""> 
-					<span class="filefieldbrowse"><img alt="" src="{{URL::asset('assets/images/uplod-imageicon.png')}}"></span>
-					
-					Add Image
-					<input type="file" onChange="$(&quot;#upload-file-info&quot;).html($(this).val());" size="40" name="file_source" style="position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:&quot;progid:DXImageTransform.Microsoft.Alpha(Opacity=0)&quot;;opacity:0;background-color:transparent;color:transparent;">
-					</a>
-					&nbsp;
-					<span id="upload-file-info" class="label label-info"></span>
-					</div>-->
+								<a href="javascript:;" class=""> 
+									<span class="filefieldbrowse"><img alt="" src="{{URL::asset('assets/images/uplod-imageicon.png')}}"></span>
+									Add Image
+									<input type="file" onChange="$(&quot;#upload-file-info&quot;).html($(this).val());" size="40" name="file_source" style="position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:&quot;progid:DXImageTransform.Microsoft.Alpha(Opacity=0)&quot;;opacity:0;background-color:transparent;color:transparent;">
+									</a>
+									&nbsp;
+									<span id="upload-file-info" class="label label-info"></span>
+							</div>
+					-->
 					</div> 
+						</div>
+                              
+                 
                   
               </div>
             </div>
@@ -221,9 +222,8 @@
 $(document).ready(function(){
 
 $(document).on("click", ".settingUtility", function(ee) {
-
-
-  	
+	  $('.utility-box').hide();
+		$('.sutility').hide();
 		$(this).find('.utility-box').animate({height:"0"});
 		$(this).siblings('.utility-box').css({display: "block"});;
 		$(this).siblings('.utility-box').animate({height: "130px"});		
@@ -231,7 +231,7 @@ $(document).on("click", ".settingUtility", function(ee) {
 		
 		$('.editutility').on("click",function(e){
 			e.stopPropagation();
-			$(this).parents('.utility-box').find('.cutility').show();
+			$(this).parents('.utility-box').find('.cutility').hide();
 			$(this).parents('.utility-box').find('.mutility').hide();
 			$(this).parents('.utility-box').find('.sutility').hide();	
 			
@@ -249,7 +249,7 @@ $(document).on("click", ".settingUtility", function(ee) {
 		
 		$('.copyutility').on("click",function(e){
 			e.stopPropagation();
-			$(this).parents('.utility-box').find('.cutility').show();
+			$(this).parents('.utility-box').find('.cutility').hide();
 			$(this).parents('.utility-box').find('.mutility').hide();
 			$(this).parents('.utility-box').find('.sutility').hide();			
 		});
@@ -257,21 +257,23 @@ $(document).on("click", ".settingUtility", function(ee) {
 		
 		$('.closeutilityPopup').on("click",function(e){
 			e.stopPropagation();
-			$(this).parents('.utility-box').find('.cutility').hide();			
+			$('.utility-box').fadeOut(800);
+			$(this).parents('.utility-box').find('.cutility').hide();	
+			$('.utility-box').animate({height: "0px"});
+			$(this).parents('.utility-box').find('.sutility').hide();
+			$(this).parents('.utility-box').find('.mutility').hide();
+			$(this).parents('.utility-box').find('.cutility').hide();				
 		});
 
   
 		$('.moveutility').on("click",function(e){
 			e.stopPropagation();			
-			$(this).parents('.utility-box').find('.mutility').show();
+			$(this).parents('.utility-box').find('.mutility').hide();
 			$(this).parents('.utility-box').find('.cutility').hide();			
 			$(this).parents('.utility-box').find('.sutility').hide();			
 		});
 		
-		$('.closeutilityPopup').on("click",function(e){
-			e.stopPropagation();
-			$(this).parents('.utility-box').find('.mutility').hide();			
-		});
+		
 		
 		
 		
@@ -279,8 +281,10 @@ $(document).on("click", ".settingUtility", function(ee) {
 			e.stopPropagation();			
 			$(this).parents('.utility-box').find('.sutility').show();
 			$(this).parents('.utility-box').find('.mutility').hide();
-			$(this).parents('.utility-box').find('.cutility').hide();			
-						
+			$(this).parents('.utility-box').find('.cutility').hide();	
+			var link = $(this).parents('.container_boxgroup').find('.title-ravabegroup').find('.ng-binding').attr('href');	
+			$('.sharelink').html(link);
+			//$('.sharelink').select();						
 		});
 		
 		$('.closeutilityPopup').on("click",function(e){
@@ -298,9 +302,11 @@ $(document).on("click", ".settingUtility", function(ee) {
 		
 	});
 	
-
-	
 	$('body,html').click(function(e) { 	
+			 //$('.utility-box').fadeOut(800);
+	});
+	
+	$('.settingUtility').click(function(e) { 	
 	$('.utility-box').animate({height: "0px"});
 	$('.cutility').hide();
 	$('.mutility').hide();

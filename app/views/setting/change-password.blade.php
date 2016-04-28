@@ -45,14 +45,14 @@
 		<div class="row">
         <div class="formsetLogin">
 		{{ Form::open(array('url' => '/change-password', 'id'=>'change-password')) }}
-		<h2><strong>Change Password</strong></h2>
+		<h2><strong><?php echo Lang::get('messages.change_password');?></strong></h2>
 		<div class="loginFormDataroom clearfix">
         
-		<label class="password-lbl"><span>Old Password</span><input type="password" name="oldpassword" placeholder="Old Password" required></label>
-        <label class="password-lbl"><span>New Password</span> <input type="password" name="password" id="password" placeholder="New Password" title="Password must contain at least 8 characters, including UPPER/lowercase and numbers" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,14}" onchange="this.setCustomValidity(this.validity.patternMismatch ? this.title : '');" required></label>
-     	<label class="password-lbl"><span>Confirm Password</span> <input type="password"  id="confirm_password" name="re-password" placeholder="Confirm Password" required></label>       
+		<label class="password-lbl"><span><?php echo Lang::get('messages.label_old_password');?></span><input type="password" name="oldpassword" placeholder="<?php echo Lang::get('messages.label_old_password');?>" required></label>
+        <label class="password-lbl"><span><?php echo Lang::get('messages.label_new_password');?></span> <input type="password" name="password" id="password" placeholder="<?php echo Lang::get('messages.label_new_password');?>" title="<?php echo Lang::get('messages.password_validation_msg');?>" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,14}" onchange="this.setCustomValidity(this.validity.patternMismatch ? this.title : '');" required></label>
+     	<label class="password-lbl"><span><?php echo Lang::get('messages.confirm_password');?></span> <input type="password"  id="confirm_password" name="re-password" placeholder="<?php echo Lang::get('messages.confirm_password');?>" required></label>       
 		<button type="submit" class="btn btn-lg btn-primary btn-block btn-red btn-login">
-        Save password</button>
+        <?php echo Lang::get('messages.label_save_password');?></button>
 		</div>
 		{{ Form::close() }}
 		</div>
@@ -71,7 +71,7 @@
         var password = document.getElementById("password"), confirm_password = document.getElementById("confirm_password");
         function validatePassword() {
             if (password.value != confirm_password.value) {
-                confirm_password.setCustomValidity("Passwords Don't Match");
+                confirm_password.setCustomValidity("<?php echo Lang::get('messages.msg_password_not_match');?>");
             } else {
                 confirm_password.setCustomValidity('');
             }

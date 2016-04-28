@@ -53,46 +53,50 @@ class Project extends Eloquent {
   }
 
   
-    public static function getProjectForUser($user_id, $dataroomId){
+    public static function getProjectForUser($user_id, $dataroomId, $page=''){
 			if($dataroomId > 0){
 				return DB::table('projects')
 					->join('user_project', 'projects.id', '=', 'user_project.project_id')
-					->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus','user_project.role','user_project.user_id','user_project.dataroom_id')
+					->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus', 'projects.domain_restrict as domain_restrict', 'projects.internal_user as internal_user', 'projects.view_only as view_only','user_project.role','user_project.user_id','user_project.dataroom_id')
 					->where('user_project.user_id', $user_id)
 					->where('user_project.dataroom_id', $dataroomId)
 					->where('projects.status', 1)
-					->orderBy('projects.updated_at', 'desc')	
+					->orderBy('projects.updated_at', 'desc')
+					->limit(30)->offset(($page-1)*30)	
 					->get();
 			}
 			else {
 				return DB::table('projects')
 					->join('user_project', 'projects.id', '=', 'user_project.project_id')
-					->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus','user_project.role','user_project.user_id','user_project.dataroom_id')
+					->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus', 'projects.domain_restrict as domain_restrict', 'projects.internal_user as internal_user', 'projects.view_only as view_only','user_project.role','user_project.user_id','user_project.dataroom_id')
 					->where('user_project.user_id', $user_id)
 					->where('projects.status', 1)
-					->orderBy('projects.updated_at', 'desc')	
+					->orderBy('projects.updated_at', 'desc')
+					->limit(30)->offset(($page-1)*30)	
 					->get();
 			}
 												
   }
   
 
-public static function getProjectForSupoerADmin($dataroomid){
+public static function getProjectForSupoerADmin($dataroomid, $page=''){
 		if($dataroomid > 0){
 			return DB::table('projects')->join('user_project', 'projects.id', '=', 'user_project.project_id')
-				->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus','user_project.role','user_project.user_id','user_project.dataroom_id')
+				->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus', 'projects.domain_restrict as domain_restrict', 'projects.internal_user as internal_user', 'projects.view_only as view_only','user_project.role','user_project.user_id','user_project.dataroom_id')
 				->where('user_project.role', 'admin')
 				->where('projects.data_room_id', $dataroomid)
 				->groupBy('projects.id')
 				->orderBy('projects.updated_at', 'desc')
+				 ->limit(30)->offset(($page-1)*3)
 				->get();
 		}
 		else {
 			return DB::table('projects')->join('user_project', 'projects.id', '=', 'user_project.project_id')
-				->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus','user_project.role','user_project.user_id','user_project.dataroom_id')
+				->select('projects.id as projid', 'projects.name', 'projects.updated_at', 'projects.status as projstatus', 'projects.domain_restrict as domain_restrict', 'projects.internal_user as internal_user', 'projects.view_only as view_only','user_project.role','user_project.user_id','user_project.dataroom_id')
 				->where('user_project.role', 'admin')
 				->groupBy('projects.id')
 				->orderBy('projects.updated_at', 'desc')
+				->limit(3)->offset(($page-1)*3)
 				->get();
 		
 		}
@@ -138,4 +142,20 @@ public static function getProjectForSupoerADmin($dataroomid){
 		}	
 		return $proInfo;
 	}
+	
+	public function getProjectRoomOverRide($did) {
+		$flag = false;
+		$ProjectRoominfo 	= Project::where('id', $did)->first();
+		
+		if($ProjectRoominfo->domain_restrict)
+			$flag = true;
+			
+		if($ProjectRoominfo->internal_user)
+			$flag = true;
+			
+		if($ProjectRoominfo->view_only)
+			$flag = true;	
+				
+		return $flag;
+    }
 }

@@ -28,7 +28,7 @@
 <div id="client-room" class="main content"   >
   <div id="client-rooms" ng-app="ravabedata" class="add-room" ng-controller="dataroomctrl">
     <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12" >
+      <div>
         <?php 
    $Dataroom 	  = Dataroom::where('id', $did)->first();
    $dname = '';
@@ -37,33 +37,33 @@
    	$dname = ucfirst($Dataroom->name);
    }
     ?>
-        <div class="breadcrumb-header" style="margin:0 15px 25px 0;">
+        <div class="breadcrumb-header" style="margin:0 15px 0 0;">
           <ul>
-            <li><a href="{{url('dataroom/view')}}">Dataroom</a></li>
+            <li><a href="{{url('dataroom/view-dataroom')}}"><?php echo Lang::get('messages.middle_header_link_dataroom');?></a></li>
             <?php if($dname ){ ?>
-            <li><a href="{{url('project/view')}}?d=<?php echo $varGetDataRoomId?>">{{$dname}}</a></li>
-            <?php } else { ?>
-            <li><a href="{{url('project/view')}}">Project</a></li>
+            <li><a href="{{url('dataroom/view-dataroom')}}">{{$dname}}</a></li>
             <?php } ?>
+            <li><a href="{{url('dataroom/view-dataroom')}}"><?php echo Lang::get('messages.label_add_project');?></a></li>
+            <?php  ?>
           </ul>
         </div>
       </div>
     </div>
     <div class="room">
-      <h2><strong>Add</strong> Project</h2>
+      <h2><strong><?php echo Lang::get('messages.label_add');?></strong> <?php echo Lang::get('messages.label_project');?></h2>
       {{ Form::open(array('url' => '','files' => true,'id'=>'addProjectroomForm')) }} 
       <!--	{{ Form::open(array('url' => 'project/save-project','files' => true,'id'=>'upload')) }} -->
       <input type="hidden" name="addProjectRoom" value="add" class="form-control">
       <?php  if($did > 0 && $UserRole=="admin"){?>
-      <input type="hidden" name="dataRoomId" value="{{$did}}" >
+      <input type="hidden" ng-model="project.dataRoomId" name="dataRoomId" value="{{$did}}" >
       <?php }?>
       <div class="content content-form">
-        <h3>Project Name</h3>
-				<input type="text" id="dataRoom" name="projectRoom" value="" placeholder="Project Name" required>
+        <h3><?php echo Lang::get('messages.label_project_name');?></h3>
+				<input type="text" id="dataRoom" name="projectRoom" value="" placeholder="<?php echo Lang::get('messages.label_project_name');?>" required>
 
         <?php if($did=='' && $UserRole=="admin"){?>
         <div class="choosedataroom">
-          <h3>Dataroom</h3>
+            <h3><?php echo Lang::get('messages.middle_header_link_dataroom');?></h3>
           <?php 
 									$i= 0;
 									if(count($arrDr) >0){?>
@@ -75,36 +75,38 @@
           <?php $i++;}?>
         </div>
         <?php }?>
-        <h3>Description</h3>
-        <textarea name="description" rows="4" placeholder="Projects admins can add descripton of products..."></textarea>
+        <h3><?php echo Lang::get('messages.label_description');?></h3>
+        <textarea name="description" rows="4" placeholder="<?php echo Lang::get('messages.valid_msg_for_project_add');?>..."></textarea>
       </div>
-      <div class="content content-form">
-        <h3>Override</h3>
+      <div class="content content-form override">
+         <h4><?php echo Lang::get('messages.label_override');?></h4>
          <input type="hidden" name="company" id="company" value="www.youcompany.com"  placeholder="www.youcompany.com">
-        <h3>Restrict Domain (if necessary)</h3>
+        <h3><?php echo Lang::get('messages.domain_validation_msg');?></h3>
         <input type="text" name="domain_restrict" ng-model="domain_restrict" id="domain_restrict" onblur="isUrlDomain()" placeholder="@yoursite.com">
         <?php
 				$Dataroom 	  = Dataroom::where('id', $did)->first();
 				$readonly = 0;
 				$internalUserOnly = 0;
-			
+				$frompro=0;
 				if(sizeof($Dataroom)>0) {   
 					$internalUserOnly = $Dataroom->internal_user; 
 					$readonly = $Dataroom->view_only;
-					
+					if(!$readonly){
+						$frompro=1;
+					}
 				}
 				
 				?>
         <div class="content left">
-          <h3>Internal User Only</h3>
+           <h3><?php echo Lang::get('messages.internal_user_valid_msg');?></h3>
           <input type="checkbox" id="unchecked1" value="<?php echo $internalUserOnly;?>" <?php if($internalUserOnly){?> checked="checked" <?php } ?>   class="cbx cbx1 hidden" >
           <input type="hidden" name="internel_user" value="<?php echo $internalUserOnly;?>"  id="internel_user" class="internel_user"/>
           <label for="unchecked1" class="lbl lbl1 clickChk"></label>
         </div>
         <div class="content right">
-          <h3>View Only</h3>
+          <h3><?php echo Lang::get('messages.label_view_only');?></h3>
           <input type="checkbox" id="unchecked2" value="<?php echo $readonly;?>" <?php if($readonly){?> checked="checked" <?php } ?>    class="cbx cbx2 hidden">
-          <input type="hidden" name="view_only" value="<?php echo $readonly;?>" id="view_only" class="internel_user"/>
+          <input type="hidden" name="view_only" value="<?php echo $readonly;?>" id="view_only" class="internel_user view_only"/>
           <label for="unchecked2" class="lbl lbl2"></label>
         </div>
       </div>
@@ -116,21 +118,21 @@
         </div>
         </span> <img src="{{URL::asset('assets/images/icon-logo.png')}}" id="dataroomlogo" height="40" width="40" style="float:left;"> <span class="profile_img_preview" >
         <input type="hidden" id="userprofile_picture" name="userprofile_picture" value="">
-        </span> <span style="margin-right:30px;"><a href='javascript:void(0);' onclick="$('#fileupload').trigger('click')"  class="btn btn-default btn-file btn-generic">+ Add Logo</a></span> </span> </div>
+        </span> <span style="margin-right:30px;"><a href='javascript:void(0);' onclick="$('#fileupload').trigger('click')"  class="btn btn-default btn-file btn-generic">+ <?php echo Lang::get('messages.label_people');?></a></span> </span> </div>
       <div class="section-bottom">
         <div class="content content-form">
-          <h2><strong>Add</strong> people</h2>
+           <h2><strong><?php echo Lang::get('messages.label_add');?></strong> <?php echo Lang::get('messages.label_people');?></h2>
           <div id="AutocompleteSumit">
             <div class="section-ip">
               <div class="input-grouporg">
                 <div class="angucomplete-holder">
                   <div angucomplete-alt
 						  id="email"
-						  placeholder="Search Email"
+						  placeholder="<?php echo Lang::get('messages.label_search_email');?>"
 						  pause="100"
 						  selected-object="selectedProject"
-						  remote-url="<?php echo URL::to('/')?>/dataroom/usernames"
-						  remote-url-request-formatter="remoteUrlRequestFn"
+						  remote-url="<?php echo URL::to('/')?>/project/usernames"
+						  remote-url-request-formatter="proRemoteUrlRequestFn"
 						  remote-url-data-field="items"
 						  title-field="email"
 						  description-field="firstname"
@@ -140,8 +142,8 @@
 						  match-class="highlight"    ng-model="email.emailId" > </div>
                   <div class="greenMsgPlus"></div>
                   <span ng-click="inviteuser();" class="orgadduserPlus" style="cursor:pointer"><img src="<?php echo URL::to('/')?>/assets/images/bg-add-email.jpg" alt=""></span> </div>
-                <div style="display:none"  class="errorvalidation"> <strong>Error!</strong> Please enter valid email </div>
-                <div style="display:none"  class="alert alert-success fade in successvalidation"> <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a> <strong>Success!</strong> User is added. </div>
+                <div style="display:none"  class="errorvalidation"> <strong><?php echo Lang::get('messages.error_msg');?>!</strong> <?php echo Lang::get('messages.valid_email_msg');?> </div>
+                <div style="display:none"  class="alert alert-success fade in successvalidation"> <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a> <strong><?php echo Lang::get('messages.label_success');?>!</strong> <?php echo Lang::get('messages.user_add_msg');?> </div>
               </div>
             </div>
             <div class="userplaceholder"> </div>
@@ -149,8 +151,8 @@
           </div>
         </div>
       </div>
-      <button class="btn-red btn btn-info" type="submit"  value="add">Save</button>
-      <a  class="greybtnLink" href="{{url('project/view')}}">Cancel</a>
+      <button class="btn-red btn btn-info" type="submit"  value="add"><?php echo Lang::get('messages.label_save');?></button>
+      <a  class="greybtnLink" href="{{url('dataroom/view-dataroom')}}"><?php echo Lang::get('messages.label_cancel');?></a>
       <div id="useremailid" > </div>
       {{ Form::close() }} </div>
   </div>
@@ -162,10 +164,10 @@ $(document).ready(function() {
         toastr.options = {
             "positionClass": "toast-top-center"
         };
-      //  toastr.clear();
-      //  $('.addloader').show();
-       // $('.btn-red').addClass('disabled');      
-      //  event.preventDefault();
+        toastr.clear();
+        $('.addloader').show();
+		$(".btn-red").attr("disabled","true");      
+        event.preventDefault();
         $.ajax({
             url: '<?php echo URL::to('/')?>/project/save-project',
             type: 'POST',
@@ -177,12 +179,15 @@ $(document).ready(function() {
                 $('.addloader').hide();
                 toastr[data.flag](data.msg);
 
-                if (data.flag == 'success')
-                    window.location.href = '<?php echo URL::to('/')?>/project/view?d=' + data.did;
-
+                if (data.flag == 'success'){
+                    window.location.href = '<?php echo URL::to('/')?>/dataroom/view-dataroom?den='+data.did;
+				}else{ 							
+					$(".btn-red").removeAttr("disabled");
+				}
             },
             error: function(data) {
                 $('.bodyloader').hide();
+				$(".btn-red").removeAttr("disabled");	
                 $('.addloader').hide();
 
             }
@@ -190,6 +195,19 @@ $(document).ready(function() {
         });
     });
 });
+var varProjectSaveSuccessMsg = '<?php echo Lang::get('messages.msg_prj_saved_successfully');?>';
+var varAddNotYourself = '<?php echo Lang::get('messages.msg_add_not_yourself');?>';
+var varValidEmail = '<?php echo Lang::get('messages.valid_email_msg');?>';
+var varEmailAlreadyExist = '<?php echo Lang::get('messages.msg_email_already_exist');?>';
+var varInternalUsersAllowed = '<?php echo Lang::get('messages.msg_internal_user_allowed');?>';
+var varMsgOops = '<?php echo Lang::get('messages.msg_oops');?>';
+var varDomainAlreadyResctricted = '<?php echo Lang::get('messages.msg_domain_already_resctricted');?>';
+var varOrgUserSavedSuccess = '<?php echo Lang::get('messages.msg_org_user_saved_successfully');?>';
+var varUserInvitedSuccesfully = '<?php echo Lang::get('messages.msg_user_invited_success');?>';
+var varUserNotInvitedSuccessfully = '<?php echo Lang::get('messages.msg_user_invited_not_success');?>';
+var varMsgWentWrong = '<?php echo Lang::get('messages.something_gone_wrong_msg');?>';
+var varMsgSuccess = '<?php echo Lang::get('messages.label_success');?>';
+var varMsgError = '<?php echo Lang::get('messages.error_msg');?>';
 var URL='<?php echo URL::to('/')?>';
 var currentUserEmail= '<?php  echo  $currentUser ?>'; 
 <?php $roles=  array(array ( "id" => "admin","role" => "Admin"),array ( "id" => "upload","role" => "Upload"),array ( "id" => "download","role" => "Download"),array ( "id" => "view","role" => "View"));
@@ -208,9 +226,9 @@ var HTML = '<span class="project-creator" ieuser="' + utype + '">' +
     '<span data-id="' + email + '" class="nameUserManage">' + emailt + '</span>' +
     '<span class="orgcrossbtn userinviteremove" sumit="userid-' + id + '">x</span>';
 HTML += ' <span><select data-id="' + id + '"  class="mangeuserSelect " onChange="fieldChange(this.value,' + id + ');">';
-HTML += '<option   value="view">View</option> ';
-HTML += '<option   value="download">Download</option> ';
-HTML += '<option   value="upload">Upload</option> ';
+HTML += '<option   value="view"><?php echo Lang::get('messages.label_view');?></option> ';
+HTML += '<option   value="download"><?php echo Lang::get('messages.label_download');?></option> ';
+HTML += '<option   value="upload"><?php echo Lang::get('messages.label_upload');?></option> ';
 HTML += '</select></span>';
 HTML += '</span>';
 return HTML;
@@ -219,14 +237,12 @@ return HTML;
 
 var editOrganization={}; 
 editOrganization.isedit=-1;
+var datRoom={{$did}};
 </script> 
 <script src="<?php echo URL::to('/'); ?>/assets/js/invitation-project.js"></script>
 <?php if(!$internalUserOnly){?>
 <script>
   $( document ).ready(function() {
-	  $("#dataRoom").focusout(function() {
-			$('.btn-red').removeAttr("disabled");
-		});
 	$("#domain_restrict")
   .focusout(function() {
 	  var domain = $(this).val();	 
@@ -276,7 +292,7 @@ editOrganization.isedit=-1;
 	});
 </script>
 <?php } ?>
-<?php if(!$readonly){?>
+<?php if($frompro==1){?>
 <script>
   $( document ).ready(function() {	
 	$('.lbl2').click(function () { 
@@ -287,6 +303,16 @@ editOrganization.isedit=-1;
 			$(this).parent('.content').find('.internel_user').val(1);
 			///// sumit code will call
 		}
+	});
+});
+</script>
+<?php }else{ ?>
+<script>
+  $( document ).ready(function() {	
+	$('.lbl2').click(function () {
+		toastr.clear(toast);
+		var toast = toastr.error('Dataroom overrided!!');
+		return false;
 	});
 });
 </script>
@@ -319,7 +345,7 @@ editOrganization.isedit=-1;
                      allowdtypes = 'jpeg,jpg,png,gif';
                  if (allowdtypes.indexOf(fileType.toLowerCase()) < 0) {
                      toastr.clear(toast);
-                     var toast = toastr.error('Invalid file type, aborted');
+                     var toast = toastr.error('<?php echo Lang::get('messages.msg_invalid_file_type');?>');
                      return false;
                  }
                  data.submit();
@@ -378,7 +404,7 @@ editOrganization.isedit=-1;
                 var fileType = data.files[0].name.split('.').pop(), allowdtypes = 'jpeg,jpg,png,gif';
                 if (allowdtypes.indexOf(fileType.toLowerCase()) < 0) {
                         toastr.clear(toast); 
-                        var toast = toastr.error('Invalid file type, aborted');
+                        var toast = toastr.error('<?php echo Lang::get('messages.msg_invalid_file_type');?>');
                         return false;
                     }                   
                 data.submit();
@@ -409,7 +435,7 @@ editOrganization.isedit=-1;
 			if (re.test(email)){
 		  
 			} else {
-			alert('Not a valid Domain.');
+			alert('<?php echo Lang::get('messages.msg_not_valid_domain');?>');
 			}
 		}
 	}
@@ -419,7 +445,7 @@ editOrganization.isedit=-1;
 		if($('#company').val()){
 			if(!rs){
 				toastr.options = {"positionClass": "toast-top-center"};
-				toastr['error']('Not valid url!!');
+				toastr['error']('<?php echo Lang::get('messages.msg_not_valid_url');?>');
 				$('#company').val("");
 			}
 		}
@@ -430,13 +456,10 @@ editOrganization.isedit=-1;
 			var re = /^\@[\w\-\+_]+\.[\w\-\+_]+(\.[\w\-\+_]+)*\s*$/;
 			if (!re.test(email)){
 				toastr.options = {"positionClass": "toast-top-center"};
-				toastr['error']('Not a valid Domain.');
+				toastr['error']('<?php echo Lang::get('messages.msg_not_valid_domain');?>');
 				$('#domain_restrict').val("");
 			}
 		}
 	}
-	$(".btn-red").click(function(){
-		  //$(this).attr("disabled","true");
-    });
   </script>
 @endsection

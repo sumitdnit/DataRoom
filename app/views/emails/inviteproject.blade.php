@@ -2,7 +2,7 @@
 <html>
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Invite people to Data Room</title>
+  <title><?php echo Lang::get('messages.label_invite_prople_for_dataroom');?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Quattrocento+Sans' rel='stylesheet' type='text/css'>
@@ -17,9 +17,9 @@
                 <img src="http://alpha.ravabe.com/dataroom/assets/images/logo.png" alt=""/>
             </td>
             <td bgcolor="1279B2" style="padding-left:10px;">
-                <h2 style="text-transform:uppercase;color:#fff;font-family: 'Oswald', sans-serif;">Invite people to Project Room
+                <h2 style="text-transform:uppercase;color:#fff;font-family: 'Oswald', sans-serif;"><?php echo Lang::get('messages.msg_invite_for_projectroom');?>
 								</h2>
-                <h4 style="color:#fff;font-family: 'Quattrocento Sans', sans-serif;">Think smarter, improve your workflow and enhance creativity with our intuitive platform.</h4>
+                <h4 style="color:#fff;font-family: 'Quattrocento Sans', sans-serif;"><?php echo Lang::get('messages.msg_email_content');?></h4>
             </td>
             </tr>
             <tr>
@@ -30,7 +30,7 @@
             </tr>
             <tr><td colspan="2" style="height:300px;"></td></tr>
             <tr>
-                <td colspan="2" style="padding:5px;height:20px;background-color:#1279B2;color:#fff;font-size:14px;font-family: 'Oswald', sans-serif;">© 2016 Dataroom, Inc. All rights reserved.</td>
+                <td colspan="2" style="padding:5px;height:20px;background-color:#1279B2;color:#fff;font-size:14px;font-family: 'Oswald', sans-serif;">© 2016 <?php echo Lang::get('messages.label_email_for_allrights');?></td>
             </tr>
         </table>
         </td>

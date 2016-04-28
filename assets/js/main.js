@@ -47,6 +47,34 @@ function general() {
             $('.completed-p').removeClass("completed-p-active");
         }
     });
+    
+    
+    $('.button-list1').click(function () {
+        $('.folder-mobile-menu').toggleClass('folder-mobile-menu-active');
+        $('.button-list1').toggleClass('button-list2');
+    });
+
+    $('.usercard-dataroom-wrapper a').click(function() {
+        var parent = $(this).parent().parent().parent();
+        parent.toggleClass('expand');
+    });
+}
+
+function userDetailPopup () {
+    $('.workflow-draggable-menu').toggleClass('workflow-draggable-menu-open');
+    $('.workflow-draggable-menu-content').toggleClass('workflow-draggable-content-open');
+}
+
+function editUserCard() {
+    $('.manager-user-content .user-role-dropdown').css('display', 'block');
+    $('.manager-user-content .user-card-role').css('display', 'none');
+	$('.manager-user-content #usersave').css('display', 'block');
+}
+
+function userDetailSave() {
+    $('.manager-user-content .user-role-dropdown').css('display', 'none');
+    $('.manager-user-content .user-card-role').css('display', 'block');
+    $('.manager-user-content .user-card-role').html($('.manager-user-content .user-role-dropdown').val());
 }
 
 $(document).ready(function () {
@@ -60,3 +88,7 @@ $(window).resize(function () {
     $(window).load(function () {
         $(".scroll").customScrollbar();
     });
+
+
+
+$(window).resize(function(){location.reload();});

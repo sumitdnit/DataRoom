@@ -113,7 +113,7 @@
     } */
     .header .menu ul li img {
         width: 100%;
-        max-width: 33px;
+        max-width: 25px;
     }
     .header-nav {        
         margin-top: 0;
@@ -402,4 +402,5 @@
 }
 .header-nav-menu {display:block;}
 .header {padding-top:0px;}
+.lang_menu {margin-right:15px; margin-right:35px;}
 }

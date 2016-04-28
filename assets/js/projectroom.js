@@ -33,8 +33,8 @@
 						toastr["success"]("Project room has been successfully deleted.");
 						setTimeout(function()
 								{
-									window.location.href=URL +"/project/view?d="+did; 
-								}, 3000);
+									window.location.href=URL +"/dataroom/view-dataroom"; 
+								}, 1000);
 					}
 			});
 		};	

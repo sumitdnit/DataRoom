@@ -1,0 +1,167 @@
+/* context menu */
+
+.context-menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  padding: 12px 0;
+  width: 240px;
+  background-color: #fff;
+  border: solid 1px #dfdfdf;
+  box-shadow: 1px 1px 2px #cfcfcf;
+}
+
+.context-menu--active {
+  display: block;
+}
+
+.context-menu__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.context-menu__item {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.context-menu__item:last-child {
+  margin-bottom: 0;
+}
+
+.context-menu__link {
+  display: block;
+  padding: 4px 12px;
+  color: #0066aa;
+  text-decoration: none;
+}
+
+.context-menu__link:hover {
+  background-color: #DDD;
+}
+
+.context-menu__link img {
+  margin-right: 10px;
+}
+
+.showhide{display:none;}
+.show{display:block;}
+
+.editUpdatePrj { float:right; display:block !important; margin-left:15px;}
+.editUpdatePrj a {font-size:14px; color:#333;}
+.editUpdatePrj .fa { margin-left:10px;}
+.selectedData {color:#00a6bb; font-weight:bold;}
+
+.file-data.option-list:nth-child(even) a {
+     background: none!important;
+}
+
+.listview .utility-box{
+	width:177px;
+	right:0;
+	}
+	
+.file-data .utility-popup {
+    right: 0;
+}	
+
+#create-folder-file .dashboard-draggable-menu{font-size:14px}
+
+.folderdropdown  p { display:block;font-size:14px;}
+	
+.grdview .file-data .utility-popup {
+    right: -300px;
+}	
+.qq-gallery.qq-uploader{height:500px}
+.qq-gallery.qq-uploader{max-height:700px!important}
+
+#fine-uploader-gallery{
+	    position: absolute;
+    display: none;
+    top: 0;
+    width: 100%;
+    opacity: 0.4;
+}
+.qq-gallery .qq-upload-button{opacity:0!important}
+
+#create-folder-file .file-upload{border-bottom:0}
+.folderdropdown select{width:200px}
+
+.second-header .breadcrumb-header{max-width: 100%;     padding: 30px 0 30px 0px;
+    margin: 0px 45px 0 28px; }
+.breadcrumb-header dl:first-child {
+    font-weight: 600;
+}
+
+.breadcrumb-header dl:first-child:before {
+    content: ': :';
+    padding-right: 10px;
+}
+.breadcrumb-header dl:after {
+    content: '/';
+    padding: 0 3px 0 8px;
+}
+breadcrumb-header dl:last-child, .breadcrumb-header dl.blue {
+    font-weight: 600;
+    color: #1179ad;
+}
+.breadcrumb-header dl {
+    display: inline;
+}
+
+.breadcrumb-header dl:last-child:after {
+    content: '';
+}
+.second-header {
+    width: 100%;
+    height: 147px;}
+    
+#create-folder-file .dashboard-draggable-menu{top:123px}
+
+#create-folders.main-config {
+    margin-top: 210px;
+}
+
+
+.second-header .closed{
+	display:none;
+}
+
+.second-header .open{
+	display:block;
+}
+
+ #fine-uploader-gallery button{height:auto;width:auto}
+ .qq-gallery .qq-upload-list li {height:119px}
+ .qq-thumbnail-wrapper img,.qq-gallery .qq-thumbnail-wrapper{    width: 30px;
+    height: 30px;    margin-left: 8px;
+    margin-top: 8px;}
+.qq-upload-cancel{    height: 22px!important;
+    width: 22px!important;}
+.qq-gallery .qq-upload-retry {
+  
+        left: 64%;
+    margin-left: -26px;
+    margin-top: -3px;
+}
+
+.qq-gallery .qq-upload-list li{    margin: 0 20px 3px 0;}    
+.qq-upload-button {border:none; box-shadow:none;}
+.qq-upload-button-selector{display:none}
+
+.folder-main-container .filename.doc , .folder-main-container .filename.rtf, .folder-main-container .filename.txt, .folder-main-container .filename.sql {
+    background-image: url("../images/file-docx-icon.png");
+}
+
+.folder-main-container .filename.ppt {
+    background-image: url("../images/file-pptx-icon.png");
+}
+
+.folder-main-container tr.selected .filename.doc , .folder-main-container tr.selected .filename.rtf, .folder-main-container tr.selected .filename.txt, .folder-main-container tr.selected .filename.sql {
+    background-image: url("../images/file-docx-icon-selected.png");
+}
+
+.folder-main-container tr.selected .filename.ppt {
+    background-image: url("../images/file-pptx-icon-selected.png");
+}

@@ -3,9 +3,18 @@
      $interpolateProvider.endSymbol('%>');
  });
  app.controller("ProjectInfo", function($rootScope, $scope, $http) {
-     $scope.remoteUrlRequestFn = function(str) {
+     toastr.options = {"positionClass": "toast-top-center"};
+	 $scope.project ={};
+     $scope.project.dataRoomId =datRoom;
+	 $scope.proRemoteUrlRequestFn = function(str) {
          return {
-             term: str
+             term: str,
+			 dataRoomId:$scope.project.dataRoomId
+         };
+     };
+	 $scope.remoteUrlRequestFn = function(str) {
+         return {
+             term: str,
          };
      };
      $scope.addtableid = {};
@@ -35,8 +44,10 @@
          }
      });
      $scope.updatePro = function(e) {
-		 //$('.btn-red').addClass('btn btn-info disabled');
-		// $("button").off("click");
+		 toastr.options = {"positionClass": "toast-top-center"};
+		 toastr.clear();
+		 $('.btn-red').addClass('btn btn-info disabled');
+		 $("button").off("click");
          var newaddusers = [];
          $('input[name^="userEmail"]').each(function(index) {
              arremail[index] = ($(this).val());
@@ -55,108 +66,64 @@
              };
          }
 
-         
+         //console.log(newaddusers);
          $scope.newproData.usersList = newaddusers;
          $scope.newproData.addtableid = $scope.addtableid;
          $scope.newproData.internel_user = $('#internel_user').val();
          $scope.newproData.view_only = $('#view_only').val();
          var data = $scope.newproData;
-         $http.post(URL + '/project/update-project', data).success(function(data, status) {
-			// console.log(data);
-			// return false;
-             if (data.error == 1) {
-
-                 sweetAlert("Oops...", data.msg, "error");
+         $http.post(URL + '/project/update-project', data).success(function(response, status) {		  
+             if (response.error == 1) { 
+                 sweetAlert("Oops...", response.msg, "error");
                  $('.maincontiner').css('opacity', "1");
                  $('.loader').hide();
                  $('.maincontiner').css('pointer-events', "all");
 
-             } else if (data.error == 3) {
-                 toastr.options = {
-                     "positionClass": "toast-top-center"
-                 };
-                 toastr["success"]("Project room has been successfully saved.");
+             } else if (response.error == 3) {
+                toastr.options = {"positionClass": "toast-top-center"};	
+								toastr["success"](varProjectSaveSuccessMsg);
                  //$.toaster({ priority : 'success', title : "Success", message : "Organization has been successfully saved" , timeout:5000});
                  setTimeout(function() {
-                     window.location.href = URL + "/project/view?d=" + $scope.proData.dataroom_id_encypt;
+                     window.location.href = URL + "/dataroom/view-dataroom?den="+response.dataroomId;
                  }, 3000);
-             } else if (data.error == 2) {
-                 toastr.options = {
-                     "positionClass": "toast-top-center"
-                 };
-                 toastr["success"]("Project room has been successfully saved.");
-                 //$.toaster({ priority : 'success', title : "Success", message : "Organization has been successfully saved" });
-                 if (data.invlist.length > 0) {
+             } else if (response.error == 2) {
+                 sweetAlert("Oops...", response.msg, "error");
+                 $('.maincontiner').css('opacity', "1");
+                 $('.loader').hide();
+                 $('.maincontiner').css('pointer-events', "all");
 
-                     $.each(data.invlist, function(i, objn) {
-                         toastr.options = {
-                             "positionClass": "toast-top-center"
-                         };
-                         toastr["success"]("User has been successfully invited.");
-                         //$.toaster({ priority : 'success', title : objn, message : "User has been successfully invited"});
-
-                     });
-                 }
-                 if (data.errorlist.length > 0) {
-                     $.each(data.errorlist, function(i, objn) {
-                         toastr.options = {
-                             "positionClass": "toast-top-center"
-                         };
-                         toastr["error"]("User was not invited. Please add again.");
-                         //$.toaster({ priority : 'danger', title : objn, message : "User was not invited. Please add again" });
-
-                     });
-                 }
-
-                 setTimeout(function() {
-                     window.location.href = URL + "/project/view?d=" + $scope.proData.dataroom_id_encypt;
-                 }, 3000);
-
-             } else {
-                 toastr.options = {
-                     "positionClass": "toast-top-center"
-                 };
-                 toastr["error"]("Something gone wrong. Please try again");
-                 //$.toaster({ priority : 'danger', title : 'Error', message : "Something gone wrong. Please try again" , timeout:5000});	
-                 setTimeout(function() {
-                     window.location.href = URL + "/project/view?d=" + $scope.proData.dataroom_id_encypt;
-                 }, 3000);
-
-             }
+             }  
          });
-         console.log($scope.addtableid);
-         console.log($scope.newproData.name);
+	  
+         //console.log($scope.addtableid);
+        // console.log($scope.newproData.name);
      };
      $scope.inviteuser = function(e) {
-         if ($.trim($('#email_value').val()) == '') {
-             $('#email').next().html('Please enter valid email.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
-             $('#email').next().show();
-             $('#email_value').focus();
-             $('.successvalidation').hide();
-             return false;
-         }
+		toastr.options = {"positionClass": "toast-top-center"};
+		toastr.clear(); 
+      if ($.trim($('#email_value').val()) == '') {
+					toastr.options = {"positionClass": "toast-top-center"};	
+					toastr["error"](varValidEmail);					
+					$('#email_value').focus(); 					 
+					return false;
+      }
 
 
          if ($.trim($('#email_value').val()) == $.trim(currentUserEmail)) {
-             $('#email').next().html('You can not add yourself !!<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
-             $('#email').next().show();
-             $('#email_value').focus();
-             $('.successvalidation').hide();
-             return false;
-
-         }
+					toastr.options = {"positionClass": "toast-top-center"};	
+					toastr["error"](varAddNotYourself);	
+					$('#email_value').focus(); 
+					return false;
+        }
          if ($('.nameUserManage').length > 0) {
              var flag = true;
              $('.nameUserManage').each(function(index, value) {
-
-
-
-                 if ($(this).attr('data-id') == $.trim($('#email_value').val()) && flag) {
-                     $('#email').next().html('This email was already added<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
-                     $('#email').next().show();
-                     $('#email_value').focus();
-                     $('.successvalidation').hide();
-                     flag = false;
+                if ($(this).attr('data-id') == $.trim($('#email_value').val()) && flag) {
+										toastr.options = {"positionClass": "toast-top-center"};	
+										toastr["error"](varEmailAlreadyExist);
+										$('#email_value').val("");						
+										$('#email_value').focus(); 						 
+										flag=false;
                  }
              });
              if (!flag) return false;
@@ -168,20 +135,24 @@
              $scope.emailSelected = {};
              $('#email_value').val('');
              if (!$scope.proData.domain_restrict) {
-                 $('.successvalidation').show();
+                toastr.options = {"positionClass": "toast-top-center"};	
+					toastr["success"]("User added successfully.");
              }
 
          } else {
-             $('#email').next().html('Only internal users are allowed.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
-             $('#email').next().show();
-             $('#email_value').focus();
-             return false;
+
+             toastr.options = {"positionClass": "toast-top-center"};	
+					toastr["error"]("Only internal user allowed.");
+					$('#email_value').focus(); return false;
+
 
          }
 
      };
      $scope.addUser = function(email, id, photo, utype) {
-         var addUserFlag = restrictDomain(email, $scope.proData.domain_restrict);
+         toastr.options = {"positionClass": "toast-top-center"};
+		 toastr.clear();
+		 var addUserFlag = restrictDomain(email, $scope.proData.domain_restrict);
          if (addUserFlag) {
              var datas = '<div class="usrControl" id="userid-' + id + '" ieuser="' + utype + '">';
              datas += '<input type="hidden" value="' + email + '" name="userEmail[]" />';
@@ -199,10 +170,11 @@
              $('.userplaceholder').append(addInvitedUser(email, id, photo, utype));
 
          } else {
-             $('#email').next().html('Domain is restricted.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
-             $('#email').next().show();
-             $('#email_value').focus();
-             return false;
+
+             toastr.options = {"positionClass": "toast-top-center"};	
+				toastr["error"](varDomainAlreadyResctricted); 				
+				$('#email_value').focus(); return false;
+
          }
      };
      $scope.selectedProject = function(selected) {
@@ -220,9 +192,19 @@
  });
 
  app.controller("dataroomctrl", function($rootScope, $scope, $http) {
-     $scope.remoteUrlRequestFn = function(str) {
+     toastr.options = {"positionClass": "toast-top-center"};
+	 toastr.clear();
+	 $scope.project ={};
+     $scope.project.dataRoomId =datRoom;
+	 $scope.proRemoteUrlRequestFn = function(str) {
          return {
-             term: str
+             term: str,
+			 dataRoomId:$scope.project.dataRoomId
+         };
+     };
+	 $scope.remoteUrlRequestFn = function(str) {
+         return {
+             term: str,
          };
      };
      $scope.emailSelected = '';
@@ -231,9 +213,13 @@
              $scope.org.image = e;
          },
          $scope.inviteuser = function(e) {
+			toastr.options = {"positionClass": "toast-top-center"};
+			toastr.clear();
+			var lowercaseEmail = $.trim($('#email_value').val()).toLowerCase();
+			$('#email_value').val(lowercaseEmail);
              if ($scope.emailSelected.email) {
-                 if ($.trim($('#email_value').val()) == '') {
-                     $('#email').next().html('Please enter valid email.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+                 if (lowercaseEmail == '') {
+                     $('#email').next().html(varValidEmail+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                      $('#email').next().show();
                      $('#email_value').focus();
                      $('.successvalidation').hide();
@@ -241,8 +227,8 @@
                  }
 
 
-                 if ($.trim($('#email_value').val()) == $.trim(currentUserEmail)) {
-                     $('#email').next().html('You can not add yourself !!<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+                 if (lowercaseEmail == $.trim(currentUserEmail)) {
+                     $('#email').next().html(varAddNotYourself+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                      $('#email').next().show();
                      $('#email_value').focus();
                      $('.successvalidation').hide();
@@ -255,8 +241,8 @@
 
 
 
-                         if ($(this).attr('data-id') == $.trim($('#email_value').val()) && flag) {
-                             $('#email').next().html('This email was already added<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+                         if ($(this).attr('data-id') == lowercaseEmail && flag) {
+                             $('#email').next().html(varEmailAlreadyExist+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                              $('#email').next().show();
                              $('#email_value').focus();
                              $('.successvalidation').hide();
@@ -276,23 +262,22 @@
                      }
 
                  } else {
-
-                     var pattern = /^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/;
-                     if (!pattern.test($.trim($('#email_value').val())) && e != 1) {
-                         $('#email').next().html('Please enter valid email.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+					var pattern = /^[a-z]+[a-z0-9._-]+@[a-z]+[a-z0-9._-]+\.[a-z.]{2,10}$/;
+                     if (!pattern.test(lowercaseEmail) && e != 1) {
+                         $('#email').next().html(varValidEmail+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                          $('#email').next().show();
                          $('#email_value').focus();
                          return false;
                      }
                      if ($('#internel_user').val() == 0) {
                          var externalid = Math.floor(Math.random() * 100000);
-                         $scope.addUser($.trim($('#email_value').val()), externalid, '', 'external');
+                         $scope.addUser(lowercaseEmail, externalid, '', 'external');
                          $('#email_value').val('');
                          if (!$scope.domain_restrict) {
                              $('.successvalidation').show();
                          }
                      } else {
-                         $('#email').next().html('Only Internal User allowed.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+                         $('#email').next().html(varInternalUsersAllowed+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                          $('#email_value').val('');
                          $('#email').next().show();
                          $('#email_value').focus();
@@ -301,9 +286,10 @@
                  }
              } else {
                  $('#email_value').val("");
-                 $('#email').next().html('Only Internal User allowed.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+                 $('#email').next().html(varInternalUsersAllowed+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                  $('#email').next().show();
                  $('#email_value').focus();
+
 
 
 
@@ -311,6 +297,8 @@
          },
 
          $scope.addUser = function(email, id, photo, utype) {
+			toastr.options = {"positionClass": "toast-top-center"};
+			toastr.clear();
              var addUserFlag = restrictDomain(email, $scope.domain_restrict);
              if (addUserFlag) {
                  var datas = '<div class="usrControl" id="userid-' + id + '" ieuser="' + utype + '">';
@@ -329,7 +317,7 @@
                  $('.userplaceholder').append(addInvitedUser(email, id, photo, utype));
 
              } else {
-                 $('#email').next().html('Domain is restricted.<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="#">×</a>');
+                 $('#email').next().html(varDomainAlreadyResctricted+'<a title="close" aria-label="close" data-dismiss="alert" class="close closegreen" href="javascript:void(0);">×</a>');
                  $('#email').next().show();
                  $('#email_value').focus();
                  return false;
@@ -390,7 +378,7 @@
 
                  }
                  if (!flagsite) {
-                     sweetAlert("Oops...", "Invalid Url!", "error");
+                     sweetAlert("Oops...", msg_invalid_url, "error");
                      return false;
                  }
 
@@ -415,8 +403,8 @@
                      } else if (data.error == 3) {
                          $.toaster({
                              priority: 'success',
-                             title: "Success",
-                             message: "Organization has been successfully saved",
+                             title: varMsgSuccess,
+                             message: varOrgUserSavedSuccess,
                              timeout: 5000
                          });
                          setTimeout(function() {
@@ -425,8 +413,8 @@
                      } else if (data.error == 2) {
                          $.toaster({
                              priority: 'success',
-                             title: "Success",
-                             message: "Organization has been successfully saved"
+                             title: varMsgSuccess,
+                             message: varOrgUserSavedSuccess
                          });
                          if (data.invlist.length > 0) {
 
@@ -434,7 +422,7 @@
                                  $.toaster({
                                      priority: 'success',
                                      title: objn,
-                                     message: "User has been successfully invited"
+                                     message: varUserInvitedSuccesfully
                                  });
 
                              });
@@ -445,7 +433,7 @@
                                  $.toaster({
                                      priority: 'danger',
                                      title: objn,
-                                     message: "User was not invited. Please add again"
+                                     message: varUserNotInvitedSuccessfully
                                  });
 
                              });
@@ -459,8 +447,8 @@
 
                          $.toaster({
                              priority: 'danger',
-                             title: 'Error',
-                             message: "Something gone wrong. Please try again",
+                             title: varMsgError,
+                             message: varMsgWentWrong,
                              timeout: 5000
                          });
                          setTimeout(function() {

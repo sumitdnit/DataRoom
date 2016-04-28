@@ -108,6 +108,11 @@ App::after(function($request, $response)
 //Session::put('diff',$diff);
 });
 
+if(Session::get('local')== '' ||  Session::get('local') == 'en')
+	App::setLocale('en');
+else 
+	App::setLocale('mn');
+
 /*
   |--------------------------------------------------------------------------
   | Require The Filters File

@@ -43,14 +43,14 @@
 				<input type="hidden" name="user_tz" value="America/Barbados" />
 					<div class="row">
 						<div class="formsetLogin">
-							<h2><strong>ACCOUNT SETTING</strong> </h2>
+							<h2><strong><?php echo Lang::get('messages.right_header_link_account_setting');?></strong> </h2>
 							<div class="loginFormDataroom clearfix">
-								<input type="text" class="form-control" id="firstname" placeholder="First Name" pattern="^[a-z \A-Z \u4E00-\u9FA5\uF900-\uFA2D]{2,20}$" value="{{ $profiles['firstname']}}" oninvalid="this.setCustomValidity('First Name should be alphabatical and must be at least 2 characters long')" oninput="setCustomValidity('')" name="firstname" required>
+								<input type="text" class="form-control" id="firstname" placeholder="<?php echo Lang::get('messages.label_first_name');?>" pattern="^[a-z \A-Z \u4E00-\u9FA5\uF900-\uFA2D]{2,20}$" value="{{ $profiles['firstname']}}" oninvalid="this.setCustomValidity('<?php echo Lang::get('messages.msg_first_name_validation');?>')" oninput="setCustomValidity('')" name="firstname" required>
 								
-								<input type="text" class="form-control" id="secondname" placeholder="Last Name" pattern="^[a-z \A-Z \u4E00-\u9FA5\uF900-\uFA2D]{1,20}$" value="{{ $profiles['lastname']}}" oninvalid="this.setCustomValidity('Last Name should be alphabatical and must be at least 1 characters long')" oninput="setCustomValidity('')" name="lastname" required>
+								<input type="text" class="form-control" id="secondname" placeholder="<?php echo Lang::get('messages.label_last_name');?>" pattern="^[a-z \A-Z \u4E00-\u9FA5\uF900-\uFA2D]{1,20}$" value="{{ $profiles['lastname']}}" oninvalid="this.setCustomValidity('<?php echo Lang::get('messages.msg_last_name_validation');?>')" oninput="setCustomValidity('')" name="lastname" required>
 							
 							
-								 <input type="email" class="form-control" id="email" placeholder="Email address" value="{{ $user->email}}" name="email" readonly="readonly" oninvalid="this.setCustomValidity('Please type a valid email address')" oninput="setCustomValidity('')" required>
+								 <input type="email" class="form-control" id="email" placeholder="<?php echo Lang::get('messages.label_email_address');?>" value="{{ $user->email}}" name="email" readonly="readonly" oninvalid="this.setCustomValidity('<?php echo Lang::get('messages.msg_email_required_valid');?>')" oninput="setCustomValidity('')" required>
 								 
 								 
 								  <!--<input type="password" class="form-control" id="password" placeholder="Password" name="password" title="Password must contain at least 8 characters, including UPPER/lowercase and numbers" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,30}" onchange="this.setCustomValidity(this.validity.patternMismatch ? this.title : '');">-->
@@ -70,9 +70,9 @@
 					
                             <input type="text" id="userprofilepicture"  name="userprofilepicture" value="{{$profiles['photo']}}" style="display:none;">
                         </span>
-                        <a href='javascript:void(0);' onclick="$('#fileupload').trigger('click')"  class="btn btn-default btn-file btn-generic">Browse</a>
+                        <a href='javascript:void(0);' onclick="$('#fileupload').trigger('click')"  class="btn btn-default btn-file btn-generic"><?php echo Lang::get('messages.label_browse');?></a>
 								
-								<button class="btn btn-lg btn-primary btn-block btn-red btn-login"  type="submit"  value="update">Update</button>		
+								<button class="btn btn-lg btn-primary btn-block btn-red btn-login"  type="submit"  value="update"><?php echo Lang::get('messages.label_update');?></button>		
 							</div>
 						</div>
 					</div>
@@ -98,7 +98,7 @@
                 var fileType = data.files[0].name.split('.').pop(), allowdtypes = 'jpeg,jpg,png,gif';
                 if (allowdtypes.indexOf(fileType.toLowerCase()) < 0) {
                         toastr.clear(toast); 
-                        var toast = toastr.error('Invalid file type, aborted');
+                        var toast = toastr.error('<?php echo Lang::get('messages.msg_invalid_file_type');?>');
                         return false;
                     }                   
                 data.submit();

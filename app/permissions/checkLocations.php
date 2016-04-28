@@ -7,8 +7,6 @@ class checkLocations {
 	public $UserId = null;
 	
 	function __construct() {
-		//$ath = new AuthController();		
-    	
 		
 		if (Sentry::check()) {
 			$this->user = Sentry::getUser();
@@ -17,33 +15,40 @@ class checkLocations {
 		$this->UserId = $this->user->id;
 		$this->UserEmail =$this->user->email;
 	
-		
-		
+
    }
 	
 public function  saveinfo() {
 	
 	 $uid= $this->UserId ;
 	 $this->UserEmail;
-	//print_r($_SERVER);
-	//echo $req= $_SERVER['REMOTE_ADDR'].'-'.$_SERVER['REQUEST_URI'];
-	 $req= $_SERVER['REQUEST_URI'];
+	$req= $_SERVER['REQUEST_URI'];
 	$saveloc= User::where('id', $uid)->update(array('last_known_location' => $req));
-	
-	//die;
-	    
 	}
+	
+
+	public function getUserlog($action,$entity,$entity_id=0) { 
+
+		$userDataroomlog = new UserLog();
+		$userDataroomlog->user_id = $this->user->id;
+		$userDataroomlog->action = $action;	
+		$userDataroomlog->url = $_SERVER['REQUEST_URI'];
+		$userDataroomlog->entity = $entity;
+		$userDataroomlog->entity_id = $entity_id;
+		$userDataroomlog->save();
+	
+		return $userDataroomlog->id;
+	} 
 	
 public function addclick()  {
 
  // assume you have a clicks  field in your DB
-
  $this->clicks = $this->clicks + 1;
  $this->save();
 
 }
 	
-	public function get($tokenKey) {
+public function get($tokenKey) {
 		
 		return Redirect::to(Input::get('referer'));
         if(isset($tokenKey)) {
@@ -54,7 +59,5 @@ public function addclick()  {
 		
 	
 }
-
-
 //checkLocations::getSubModulePermisions('Project');
 ?>

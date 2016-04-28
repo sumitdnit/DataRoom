@@ -29,7 +29,7 @@
 		  <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Data Room</title>
+   <title><?php echo Lang::get('messages.msg_dataroom_with_space');?></title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -73,6 +73,18 @@
         </div> -->
 		
         <div class="header-nav">
+				<!-- Language menu option start-->
+					<div class="lang_menu clearfix">
+						<ul>
+							<li>
+								<a href="javascript:void(0)" title="EN" language="en" class="<?php if(Session::get('local') == '') {echo 'selected';} else if(Session::get('local') == 'en') {echo 'selected';}   ?>">EN</a>
+							</li>
+							<li>
+								<a href="javascript:void(0)" language="mn" title="??" class="<?php if(Session::get('local') == 'mn') {echo 'selected';}?>">??</a>
+							</li>				
+						</ul>
+					</div>  
+		<!-- Language menu option end-->
            <!--  <div class="search">
                 <a href="">
                     <i class="fa fa-search"></i>
@@ -98,9 +110,29 @@
 
     </div>
     <!-- End of Header -->
-      
-        <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function () {
+			  $('.lang_menu li a').on("click",function(event){
+				event.preventDefault();
+				$('.lang_menu li a').removeClass('selected');
+				$(this).toggleClass('selected');		
+				var language = $(this).attr('language');
+				window.location.href = '<?php echo URL::to('/')?>/language?lang='+language;	
+					/*	$.ajax({
+					url: '<?php echo URL::to('/')?>/language',
+					type: 'GET',
+					data: { lang: language },
+					//processData: false,
+					//contentType: false,
+					success: function (data){ 
+						//toastr[data.flag](data.msg);
+						window.location.href = '<?php echo URL::to('/')?>';	
+					}
+				})
+				
+					*/
+				});
+			
         $('#terms').click(function () {
           $('#modal-opener').trigger('click');
         });

@@ -94,9 +94,16 @@ Route::get('/autocomplete', [
 
 /*DATAROOM Routes START*/
 // For call dataroom view
+
+// route for new view-dataroom page 
+Route::get('/dataroom/view-dataroom', [
+    'as' => '/dataroom/view-dataroom',
+    'uses' => 'DataroomController@getViewDataRoom'
+]);
+
 Route::get('/dataroom/view', [
     'as' => 'dataroom',
-    'uses' => 'DataroomController@getDRView'
+    'uses' => 'DataroomController@getViewDataRoom'
 ]);
 
 //use for data room list for users
@@ -180,13 +187,18 @@ Route::get('/auth/user-invite/{user_id}', [
 
 /*PRJECT Routes START*/
 //use for Project room list for users
+Route::get('project/usernames/', [
+    'as' => 'usernames',
+    'uses' => 'ProjectController@getUsernames'
+]);
 Route::get('/project/getprojectlist', [
     'as' => 'project',
     'uses' => 'ProjectController@getprojectlist'
 ]);
 Route::get('/project/view', [
     'as' => '/project/view',
-    'uses' => 'ProjectController@getProjects'
+    'uses' => 'DataroomController@getViewDataRoom'
+    //'uses' => 'ProjectController@getProjects'
 ]);
 
 Route::get('/project/add-project', [
@@ -283,6 +295,15 @@ Route::get('users/folder', [
     'as' => 'folder',
     'uses' => 'FolderController@listFolder'
 ]);
+/*
+*For resend mail to not activated user.
+*28//04/16
+*@krrish
+*/
+Route::post('users/revokeuser', [
+    'as' => 'revokeMail',
+    'uses' => 'UserController@revokeUser'
+]);
 
 Route::post('users/savefolder', [
     'as' => 'savefolder',
@@ -365,3 +386,82 @@ Route::post('/upload-file', [
     'uses' => 'FolderController@uploadFile'
 ]);
 /* End folder controller */
+
+Route::get('/users', [
+    'as' => 'users',
+    'uses' => 'UserController@listUsers'
+]);
+
+Route::get('/usersdesc', [
+    'as' => 'usersdesc',
+    'uses' => 'UserController@listDiscUsers'
+]);
+
+Route::post('/usersdetails', [
+    'as' => 'usersdetails',
+    'uses' => 'UserController@UsersDetails'
+]);
+
+
+Route::post('/userssave', [
+    'as' => 'userssave',
+    'uses' => 'UserController@UsersSaves'
+]);
+
+//Update dataroom to delete form
+Route::post('userdelete', [
+    'as' => 'userdelete',
+    'uses' => 'UserController@deleteUser'
+]);
+
+//leave user detail
+Route::get('/userdetail', [
+    'as' => 'userdetail',
+    'uses' => 'UserController@UserInfo'
+]);
+
+//leave user project
+
+Route::post('/leaveproject', [
+    'as' => 'leaveproject',
+    'uses' => 'UserController@leaveProject'
+]);
+
+//leave user data room
+
+Route::post('/leavedataroom', [
+    'as' => 'leavedataroom',
+    'uses' => 'UserController@leaveDataroom'
+]);
+
+//Copy content from dataroom to files and folders
+Route::post('copydataroom', [
+    'as' => 'copydataroom',
+    'uses' => 'DataroomController@CopyDataRoom'
+]);
+
+//Copy content from dataroom to files and folders
+Route::post('copyproject', [
+    'as' => 'copyproject',
+    'uses' => 'ProjectController@CopyProject'
+]);
+
+// SET language changer action
+// Developed by kapil
+
+Route::get('/language', 
+		array(
+			'as' => 'language', 
+			'uses' => 'LanguageController@select'
+		)
+  );
+  
+Route::post('copyfile', [
+    'as' => 'copyfile',
+    'uses' => 'FolderController@copyFile'
+]);  
+  
+Route::post('sharefile', [
+     
+    'uses' => 'FolderController@shareFile'
+]);  
